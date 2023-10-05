@@ -1,14 +1,15 @@
 import json
+import os
 import re
 
 import requests
 from fastapi import APIRouter
-from fastapi import Request, HTTPException, status
+from fastapi import Request, HTTPException
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import Flow
 from googleapiclient.discovery import build
 from starlette.responses import RedirectResponse
-import os
+
 from config import settings
 from model.user import User
 
@@ -82,12 +83,8 @@ def login_callback(request: Request):
 
 @router.get("/emails")
 def get_emails(request: Request):
-    if "credentials" not in request.session:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="User not logged in"
-        )
-    creds_data = request.session["credentials"]
+    user = User.get_by_email("mmadikhan1998@gmail.com")
+    creds_data = json.loads(user.user_auth)
     creds = Credentials(
         token=creds_data["token"],
         refresh_token=creds_data["refresh_token"],
@@ -96,7 +93,6 @@ def get_emails(request: Request):
         client_secret=creds_data["client_secret"],
         scopes=creds_data["scopes"]
     )
-
     service = build("gmail", "v1", credentials=creds)
     results = service.users().messages().list(userId="me", maxResults=5).execute()
     messages = results.get("messages", [])
@@ -118,6 +114,4 @@ def get_emails(request: Request):
             'sender': sender_email,
             'sender_name': sender_name
         })
-    print(emails)
-
     return emails
