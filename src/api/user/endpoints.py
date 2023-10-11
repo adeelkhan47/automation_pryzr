@@ -81,6 +81,6 @@ def login_callback(request: Request):
 
 @router.get("/emails")
 def process_emails(request: Request):
-    user = User.get_by_email("mmadikhan1998@gmail.com")
+    user = User.get_by_email("fireblink777@gmail.com")
     emails = get_emails(user.user_auth)
     return emails
