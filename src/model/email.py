@@ -9,6 +9,7 @@ class Email(Base):
     __tablename__ = "email"
     email_id = Column(String, index=True, unique=True, nullable=False)
     subject = Column(String(200))
+    reason = Column(String(200))
     sender_email = Column(String)
     sender_name = Column(String)
     status = Column(String)

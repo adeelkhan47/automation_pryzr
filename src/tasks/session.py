@@ -3,7 +3,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 
 from config import settings
 
-engine = create_engine(settings.SQLALCHEMY_DATABASE_URI)
+engine = create_engine(settings.database_uri)
 
 
 def get_session():

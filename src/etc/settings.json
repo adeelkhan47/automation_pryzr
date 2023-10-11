@@ -1,0 +1,18 @@
+{
+  "cors_origins": [
+    "*"
+  ],
+  "database_uri": "postgresql://postgres:postgres@localhost:5432/automation_pryzr",
+  "CLIENT_ID": "562930917300-5t89lqdelnh5q69jlt34b1qut8o8lpkj.apps.googleusercontent.com",
+  "CLIENT_SECRET": "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",
+  "REDIRECT_URI": "http://localhost:8000/user/login/callback",
+  "SCOPES": [
+    "openid",
+    "https://www.googleapis.com/auth/gmail.readonly",
+    "https://www.googleapis.com/auth/userinfo.email",
+    "https://www.googleapis.com/auth/userinfo.profile"
+  ],
+  "CELERY_BROKER_REDIS": "redis://127.0.0.1:6379/0",
+  "REDIS_HOST": "127.0.0.1",
+  "REDIS_PORT": "6379"
+}

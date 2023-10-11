@@ -1,16 +1,14 @@
 import json
 import os
-import re
 
 import requests
 from fastapi import APIRouter
 from fastapi import Request, HTTPException
-from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import Flow
-from googleapiclient.discovery import build
 from starlette.responses import RedirectResponse
 
 from config import settings
+from helpers.common import get_emails
 from model.user import User
 
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
@@ -76,42 +74,13 @@ def login_callback(request: Request):
                 email=user_email,
                 user_auth=json.dumps(creds_data),
             )
-            db_user = db_user.insert()
+            db_user.insert()
     else:
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
 
 @router.get("/emails")
-def get_emails(request: Request):
+def process_emails(request: Request):
     user = User.get_by_email("mmadikhan1998@gmail.com")
-    creds_data = json.loads(user.user_auth)
-    creds = Credentials(
-        token=creds_data["token"],
-        refresh_token=creds_data["refresh_token"],
-        token_uri=creds_data["token_uri"],
-        client_id=creds_data["client_id"],
-        client_secret=creds_data["client_secret"],
-        scopes=creds_data["scopes"]
-    )
-    service = build("gmail", "v1", credentials=creds)
-    results = service.users().messages().list(userId="me", maxResults=5).execute()
-    messages = results.get("messages", [])
-
-    emails = []
-    for message in messages:
-        email_data = service.users().messages().get(userId="me", id=message["id"]).execute()
-        # emails.append(email_data)
-        headers = email_data['payload']['headers']
-        email_id = message["id"]
-        subject = next(header['value'] for header in headers if header['name'] == 'Subject')
-        sender_full = next((header['value'] for header in headers if header['name'] == 'From'), None)
-        match = re.search(r'(?:"?(.*?)"?\s)?<(.*?)>', sender_full)
-        sender_name = match.group(1) if match and match.group(1) else None
-        sender_email = match.group(2) if match else sender_full
-        emails.append({
-            'email_id': email_id,
-            'subject': subject,
-            'sender': sender_email,
-            'sender_name': sender_name
-        })
+    emails = get_emails(user.user_auth)
     return emails
