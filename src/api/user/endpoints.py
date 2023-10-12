@@ -1,14 +1,19 @@
 import json
+import logging
 import os
 
 import requests
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from fastapi import Request, HTTPException
 from google_auth_oauthlib.flow import Flow
 from starlette.responses import RedirectResponse
 
+from common.enums import EmailStatus
 from config import settings
 from helpers.common import get_emails
+from helpers.deps import Auth
+from helpers.jwt import create_access_token
+from model import Email
 from model.user import User
 
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
@@ -56,31 +61,53 @@ def login_callback(request: Request):
     headers = {'Authorization': 'Bearer {}'.format(flow.credentials.token)}
     userinfo_response = requests.get('https://www.googleapis.com/oauth2/v3/userinfo', headers=headers)
     user_email = None
+    user_full_name = None
     if userinfo_response.status_code == 200:
         user_info = userinfo_response.json()
         user_email = user_info.get('email', 'No email found')  # Extract email from the response
+        user_full_name = user_info.get('name', 'No name found')
         creds_data["email"] = user_email
     else:
         print("Failed to fetch user info")
-    request.session["credentials"] = creds_data
+    # request.session["credentials"] = creds_data
 
     if user_email:
         print(user_email)
         user = User.get_by_email(user_email)
         if user:
-            print("User Exist.")
+            logging.info("User already Registered.")
         else:
-            db_user = User(
+            user = User(
                 email=user_email,
                 user_auth=json.dumps(creds_data),
             )
-            db_user.insert()
+            user.insert()
+        access, refresh = create_access_token(user.id)
+        token = {
+            "full_name": user_full_name,
+            "access_token": access,
+            "refresh_token": refresh,
+            "email": user.email
+        }
+        return token
     else:
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
 
-@router.get("/emails")
-def process_emails(request: Request):
-    user = User.get_by_email("fireblink777@gmail.com")
+@router.get("/new_emails")
+def process_emails(request: Request, user: User = Depends(Auth())):
     emails = get_emails(user.user_auth)
-    return emails
+    return {"Data": emails}
+
+
+@router.get("/emails")
+def process_emails(request: Request, user: User = Depends(Auth()), status: EmailStatus = "",
+                   start: int = 1,
+                   limit: int = 20,
+                   order_by: str = ""):
+    args = dict(request.query_params)
+    if "status" in args.keys():
+        args["status:eq"] = args["status"]
+        del args["status"]
+    emails, count = Email.filter_and_order(args)
+    return {"data": emails, "total_rows": count, "error": None}

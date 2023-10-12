@@ -2,7 +2,6 @@ import os
 from pathlib import Path
 from typing import Dict
 
-import jinja2
 from fastapi import HTTPException
 
 
@@ -30,13 +29,3 @@ def response_structure(data, total_rows: int = None) -> Dict:
         response["total_rows"] = total_rows
     return response
 
-
-JINJA2_TEMPLATE_PATH = os.path.join(
-    str(Path(__file__).parent.parent.parent), "src", "templates"
-)
-jinja2_env = jinja2.Environment(
-    loader=jinja2.FileSystemLoader(
-        [JINJA2_TEMPLATE_PATH, os.path.join("..", "templates", "")]
-    ),
-    autoescape=jinja2.select_autoescape(),
-)
