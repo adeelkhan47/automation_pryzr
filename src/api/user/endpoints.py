@@ -5,15 +5,16 @@ import os
 import requests
 from fastapi import APIRouter, Depends
 from fastapi import Request, HTTPException
+from fastapi_sqlalchemy import db
 from google_auth_oauthlib.flow import Flow
 from starlette.responses import RedirectResponse
 
 from common.enums import EmailStatus
 from config import settings
-from helpers.common import get_emails
 from helpers.deps import Auth
 from helpers.jwt import create_access_token
-from model import Email
+from helpers.platform import taichi, vblink, kirin
+from model import Email, UserEmail
 from model.user import User
 
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
@@ -95,9 +96,20 @@ def login_callback(request: Request):
 
 
 @router.get("/new_emails")
-def process_emails(request: Request, user: User = Depends(Auth())):
-    emails = get_emails(user.user_auth)
+def process_emails(request: Request):
+    # emails = vblink("test000111",1,"justest","justest1")
+    emails = kirin("Test000_",1)
     return {"Data": emails}
+@router.get("/platforms")
+def user_info(request: Request, user: User = Depends(Auth())):
+    data = [each.platform for each in user.platforms]
+    return {"Data": data}
+
+
+# @router.get("/new_emails")
+# def process_emails(request: Request):
+#     taichi("kelso919", 1)
+#     return {"Data": "emails"}
 
 
 @router.get("/emails")
@@ -109,5 +121,13 @@ def process_emails(request: Request, user: User = Depends(Auth()), status: Email
     if "status" in args.keys():
         args["status:eq"] = args["status"]
         del args["status"]
-    emails, count = Email.filter_and_order(args)
+    # if user is not None:
+    #     args["user_id:eq"] = user.id
+
+    query = db.session.query(Email)
+
+    # If user_id is provided, join with UserEmail to filter by user_id
+    if user is not None:
+        query = query.join(UserEmail).filter(UserEmail.user_id == user.id)
+    emails, count = Email.filter_and_order(args, query)
     return {"data": emails, "total_rows": count, "error": None}

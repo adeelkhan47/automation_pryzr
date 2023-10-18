@@ -21,3 +21,9 @@ class EmailStatus(Enum):
     Successful = "Successful"
     Skipped = "Skipped"
     Failed = "Failed"
+
+
+class Platforms(Enum):
+    Taichi = "Taichi"
+    VBLink = "VBlink"
+    Firekirin = "Firekirin"

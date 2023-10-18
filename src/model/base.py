@@ -52,9 +52,8 @@ class Base(object):
         Returns:
             Base
         """
-        with db():
-            db.session.delete(self)
-            db.session.commit()
+        db.session.delete(self)
+        db.session.commit()
         return self
 
     @classmethod
@@ -125,7 +124,7 @@ class Base(object):
         return count
 
     @classmethod
-    def filter_and_order(cls, args: Dict) -> Tuple[List, int]:
+    def filter_and_order(cls, args: Dict,query=None) -> Tuple[List, int]:
         """
         Get list of rows queried from database as per the arguments passed in request
         Args:
@@ -134,7 +133,8 @@ class Base(object):
             List of objects of the class on which the function is called
             and an Int representing the length of the list
         """
-
+        if query is None:
+            query = db.session.query(cls)
         def apply_filter(query, filter_by, operator, value):
             filter_field = getattr(cls, filter_by, None)
             if filter_field is None:
@@ -164,7 +164,6 @@ class Base(object):
 
             return query
 
-        query = db.session.query(cls)
 
         # apply filters
         for field, value in args.items():

@@ -1,7 +1,13 @@
 from fastapi import APIRouter
+
+from .platform import endpoints as platform_endpoints
 from .user import endpoints as user_endpoints
+
 api_router = APIRouter()
 
 api_router.include_router(
-    user_endpoints.router, prefix="/user", tags=["User"]
+    user_endpoints.router, prefix="/user", tags=["User"],
+)
+api_router.include_router(
+    platform_endpoints.router, prefix="/platform", tags=["Platform"]
 )

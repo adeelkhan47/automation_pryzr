@@ -11,6 +11,7 @@ class User(Base):
     user_auth = Column(JSON, nullable=True)
     status = Column(Boolean, default=True)
     emails = relationship("UserEmail", back_populates="user")
+    platforms = relationship("UserPlatform", back_populates="user")
 
     @classmethod
     def get_by_email(cls, email: str):

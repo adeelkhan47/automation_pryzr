@@ -8,13 +8,22 @@ from starlette.middleware.sessions import SessionMiddleware
 from api import api_router
 from config import settings
 
-app = FastAPI(title="Automation Pryzr")
+app = FastAPI(title="Autom8")
 
 app.add_middleware(
     DBSessionMiddleware,
     db_url=settings.database_uri,
     session_args={"expire_on_commit": False},
 )
+if settings.cors_origins:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=[str(origin) for origin in settings.cors_origins],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
 
 secret_key = "some-secret-key"  # Replace this with your actual secret key
 signer = URLSafeTimedSerializer(secret_key)

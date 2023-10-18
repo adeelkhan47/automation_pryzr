@@ -28,7 +28,6 @@ def get_emails(user_auth, count=5):
             headers = email_data['payload']['headers']
             email_id = message["id"]
             subject = next((header['value'] for header in headers if header['name'] == 'Subject'), None)
-
             sender_full = next((header['value'] for header in headers if header['name'] == 'From'), None)
             match = re.search(r'(?:"?(.*?)"?\s)?<(.*?)>', sender_full)
             sender_name = match.group(1) if match and match.group(1) else None
