@@ -11,7 +11,21 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 
+import time
+import os
+import pickle
+import re
+import base64
+import traceback
 
+from google_auth_oauthlib.flow import  InstalledAppFlow
+from googleapiclient.discovery import build
+from google.auth.transport.requests import Request
+
+import undetected_chromedriver as uc
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
 # import traceback
 # from google_auth_oauthlib.flow import  InstalledAppFlow
 # from googleapiclient.discovery import build
@@ -231,7 +245,7 @@ def kirin(userid, amount, username, password):
                                                                       "//a[contains(@class, 'btn12') and contains(@class, 'btn-danger') and contains(text(), 'Recharge')]")))
             recharge_btn.click()
         except:
-            msg = ""
+            msg = "User Not Found"
         driver.switch_to.default_content()
 
         # Switch to the new iframe using its `src` attribute
@@ -258,11 +272,18 @@ def kirin(userid, amount, username, password):
 
 def vblink(userid, amount, username, password):
     # Start a new instance of the Chrome browser
-    options = ChromeOptions()
-    #options.add_argument("--headless")
+    # options = ChromeOptions()
+    # #options.add_argument("--headless")
+    # options.add_argument("--no-sandbox")
+    # options.add_argument("--disable-dev-shm-usage")
+    # driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    ##
+    options = uc.ChromeOptions()
+    options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    driver = uc.Chrome(options=options, browser_executable_path='/usr/bin/google-chrome-stable')
+    ##
     status = False
     msg = ""
     try:
@@ -290,20 +311,21 @@ def vblink(userid, amount, username, password):
         driver.get("https://gm.vblink777.club/#/manage-user/search")
 
         # Wait for the radio button to be clickable and then click on it
-        player_account_radio_btn = wait.until(EC.element_to_be_clickable(
-            (By.XPATH, "//span[text()='Player account']/preceding-sibling::span[contains(@class, 'el-radio__input')]")))
-        player_account_radio_btn.click()
-
-        usersearch_elem = wait.until(EC.presence_of_element_located(
-            (By.XPATH, "//input[@placeholder='Fill In AmountPlayer ID/Phone Number/Third Party Login']")))
-        usersearch_elem.send_keys(userid)
-
-        print("searching for user")
-        # Wait for the OK button to be clickable and then click on it
-        # ok_btn = wait.until(EC.element_to_be_clickable(
-        #     (By.XPATH, "//button[contains(@class, 'el-button--primary') and .//span[text()='OK']]")))
-        # ok_btn.click()
         try:
+
+            player_account_radio_btn = wait.until(EC.element_to_be_clickable(
+                (By.XPATH, "//span[text()='Player account']/preceding-sibling::span[contains(@class, 'el-radio__input')]")))
+            player_account_radio_btn.click()
+
+            usersearch_elem = wait.until(EC.presence_of_element_located(
+                (By.XPATH, "//input[@placeholder='Fill In AmountPlayer ID/Phone Number/Third Party Login']")))
+            usersearch_elem.send_keys(userid)
+
+            print("searching for user")
+            # Wait for the OK button to be clickable and then click on it
+            # ok_btn = wait.until(EC.element_to_be_clickable(
+            #     (By.XPATH, "//button[contains(@class, 'el-button--primary') and .//span[text()='OK']]")))
+            # ok_btn.click()
             ok_btn = wait.until(EC.element_to_be_clickable(
                 (By.XPATH, "/html/body/div[1]/div/div[2]/section/div/div[1]/form/div[3]/div/button")))
 

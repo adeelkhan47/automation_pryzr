@@ -97,8 +97,8 @@ def login_callback(request: Request):
 
 @router.get("/new_emails")
 def process_emails(request: Request):
-    # emails = vblink("test000111",1,"justest","justest1")
-    emails = kirin("Test000_",1)
+    emails = vblink("test000111",1,"justest","justest1")
+    #emails = kirin("Test000_",1)
     return {"Data": emails}
 @router.get("/platforms")
 def user_info(request: Request, user: User = Depends(Auth())):
