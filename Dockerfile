@@ -1,17 +1,18 @@
-FROM python:3.9
+FROM --platform=linux/amd64 python:3.9
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install necessary packages
-RUN apt-get update && apt-get upgrade -y && \
-    apt-get install -y wget gnupg2 ca-certificates apt-transport-https && \
-    wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && \
-    echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list && \
-    apt-get update && \
-    apt-get install -y google-chrome-stable
+# Add Google Chrome to the repositories
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
+RUN echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list
 
-# Make sure Chrome is available at /usr/bin/google-chrome-stable
-RUN which google-chrome-stable
+# Update the packages
+RUN apt-get update
+
+# Install Google Chrome with verbose output
+RUN apt-get install -y google-chrome-stable || (apt-get update && apt-get -f install -y)
+
+
 
 RUN mkdir /app/
 WORKDIR /app/
