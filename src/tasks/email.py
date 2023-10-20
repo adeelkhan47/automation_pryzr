@@ -13,7 +13,9 @@ logger = logging.getLogger(__file__)
 
 @celery_app.task(bind=True, base=DbTask)
 def process_new(self, *args, **kwargs):
-    vblink("dd", 1, "332424244", "332424244")
+    res = taichi("test123", 1, "Fiverr111", "Fiverr111")
+    logging.error(res)
+
     # session = self.session
     # email_accounts = session.query(User).filter_by(status=True).all()
     # for each in email_accounts:
