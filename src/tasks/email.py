@@ -13,7 +13,7 @@ logger = logging.getLogger(__file__)
 
 @celery_app.task(bind=True, base=DbTask)
 def process_new(self, *args, **kwargs):
-    res = vblink("test000111", 1, "justest", "justest1")
+    res = kirin("Test000_", 1, "fiverr333", "fiverr333")
     logging.error(res)
 
     # session = self.session
