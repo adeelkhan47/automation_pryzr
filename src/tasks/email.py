@@ -13,7 +13,7 @@ logger = logging.getLogger(__file__)
 
 @celery_app.task(bind=True, base=DbTask)
 def process_new(self, *args, **kwargs):
-    res = taichi("test123", 1, "Fiverr111", "Fiverr111")
+    res = vblink("test000111", 1, "justest", "justest1")
     logging.error(res)
 
     # session = self.session
