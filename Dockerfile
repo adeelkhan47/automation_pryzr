@@ -11,7 +11,10 @@ RUN apt-get update
 
 # Install Google Chrome with verbose output
 RUN apt-get install -y google-chrome-stable || (apt-get update && apt-get -f install -y)
+RUN apt-get install -y tesseract-ocr
 
+# Optional: Install any languages you need, e.g., English
+RUN apt-get install -y tesseract-ocr-eng
 
 
 RUN mkdir /app/
