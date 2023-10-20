@@ -16,7 +16,7 @@ imports = ("tasks.email")
 beat_schedule = {
     "account_processed": {
         "task": "tasks.email.process_new",
-        "schedule": timedelta(minutes=2)
+        "schedule": timedelta(minutes=15)
     }
 }
 
