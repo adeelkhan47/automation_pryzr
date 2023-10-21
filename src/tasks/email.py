@@ -22,7 +22,7 @@ def process_new(self, *args, **kwargs):
         emails = get_emails(each.user_auth, 10)
         for email in emails:
             subject = email["subject"]
-            #logging.info(subject)
+            # logging.info(subject)
             sender_email = email["sender"]
             existing_email = session.query(Email).filter_by(email_id=email["email_id"]).first()
             reason = ""
@@ -30,7 +30,7 @@ def process_new(self, *args, **kwargs):
                 if not existing_email and sender_email != each.email:
                     status = EmailStatus.Skipped.value
                     # If it doesn't exist, create a new record
-                    #logging.info(sender_email)
+                    # logging.info(sender_email)
                     if "cash@square.com" == sender_email:
                         platform = ""
                         subject_ele = subject.split(" ")
@@ -105,7 +105,7 @@ def process_new(self, *args, **kwargs):
                                 reason=reason,
                                 platform=platform
                             )
-                        elif subject_platform.lower() == "v" or subject_platform.lower() == "vb" or subject_platform.lower() == "vblink":
+                        elif subject_platform.lower() == "v" or subject_platform.lower() == "vb" or subject_platform.lower() == "vblink" or "vblink" in subject_platform.lower():
 
                             platform = Platforms.VBLink.value
                             user_platforms = each.platforms
