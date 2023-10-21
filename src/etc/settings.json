@@ -5,7 +5,7 @@
   "database_uri": "postgresql://postgres:postgres@autom8_db:5432/autom8_db",
   "CLIENT_ID": "205711707476-ckfeshqc4uhsbct0h1m28u90soh217cl.apps.googleusercontent.com",
   "CLIENT_SECRET": "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",
-  "REDIRECT_URI": "http://localhost:8080/callback",
+  "REDIRECT_URI": "https://be.autom8games.com/callback",
   "SCOPES": [
     "openid",
     "https://www.googleapis.com/auth/gmail.readonly",
