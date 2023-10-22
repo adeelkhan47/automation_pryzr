@@ -1,4 +1,5 @@
 import logging
+import math
 
 from common.enums import EmailStatus, Platforms
 from helpers.common import get_emails
@@ -41,6 +42,7 @@ def process_new(self, *args, **kwargs):
                         for each_subject_ele in subject_ele:
                             if "$" in each_subject_ele:
                                 amount = each_subject_ele.replace("$", "")
+                                amount = math.floor(float(amount))
                         logging.info(f'{subject_platform}-{second_last}-{amount}')
                         if subject_platform.lower() == "t" or subject_platform.lower() == "taichi":
 
