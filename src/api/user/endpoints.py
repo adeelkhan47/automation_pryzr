@@ -13,7 +13,8 @@ from common.enums import EmailStatus
 from config import settings
 from helpers.deps import Auth
 from helpers.jwt import create_access_token
-from helpers.platform import taichi, vblink, kirin
+from helpers.platform import taichi, vblink, kirin, orionstar
+
 from model import Email, UserEmail
 from model.user import User
 
@@ -97,8 +98,9 @@ def login_callback(request: Request):
 
 @router.get("/new_emails")
 def process_emails(request: Request):
-    emails = vblink("test000111",1,"justest","justest1")
-    #emails = kirin("Test000_",1)
+    # emails = vblink("test000111",1,"justest","justest1")
+    #emails = orionstar("Test111_",1,"KingsofvOR","Admin8913")
+    emails = kirin("Test000_",1)
     return {"Data": emails}
 @router.get("/platforms")
 def user_info(request: Request, user: User = Depends(Auth())):
