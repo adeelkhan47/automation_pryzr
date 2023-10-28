@@ -78,6 +78,7 @@ def login_callback(request: Request):
         user = User.get_by_email(user_email)
         if user:
             logging.info("User already Registered.")
+            user.update(id=user.id, to_update={"user_auth": json.dumps(creds_data)})
         else:
             user = User(
                 email=user_email,
@@ -99,9 +100,11 @@ def login_callback(request: Request):
 @router.get("/new_emails")
 def process_emails(request: Request):
     # emails = vblink("test000111",1,"justest","justest1")
-    #emails = orionstar("Test111_",1,"KingsofvOR","Admin8913")
-    emails = kirin("Test000_",1)
+    # emails = orionstar("Test111_",1,"KingsofvOR","Admin8913")
+    emails = kirin("Test000_", 1)
     return {"Data": emails}
+
+
 @router.get("/platforms")
 def user_info(request: Request, user: User = Depends(Auth())):
     data = [each.platform for each in user.platforms]
