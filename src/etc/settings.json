@@ -3,8 +3,8 @@
     "*"
   ],
   "database_uri": "postgresql://postgres:postgres@autom8_db:5432/autom8_db",
-  "CLIENT_ID": "541897888013-l65co7aigf95et2ku1gblnseoagk1qm6.apps.googleusercontent.com",
-  "CLIENT_SECRET": "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",
+  "CLIENT_ID": "205711707476-ckfeshqc4uhsbct0h1m28u90soh217cl.apps.googleusercontent.com",
+  "CLIENT_SECRET": "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",
   "REDIRECT_URI": "https://www.autom8games.com/callback",
   "SCOPES": [
     "openid",
@@ -19,4 +19,3 @@
   "jwt_public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAx19SA6voS/O4heqbhy9Y\nUWmrQKFt5pXcwaGSgEsGDDZX4OTfgp2xlSiVUK1Rr0DcyVNrmX2rArNHH2jb1DK/\nbWxXzUqYgzu2TQpiSTSt/ndb1k+GxJpM7G3RAntW5HtFGNHUWI5ejz8jecRcmFnC\nGzwOAzcLg6U0poOe2LbjZOgoGaEUGw17L25LeQtWlEeasaL6kJ8pDhM30PBLbv13\nrfqbFVNmHIfcM9QBSZAh6FCPH8YBI5o4aEEBSsdpS/ykFi42rwFZ8NkQaHSsljt1\nwktZQo1dszXHtzi33Lbb/DJr7QLvwLDKBGdleZONROv3y96YwD6uK2FJZr7J3SW5\nVQIDAQAB\n-----END PUBLIC KEY-----",
   "jwt_expiry": 86400
 }
-
