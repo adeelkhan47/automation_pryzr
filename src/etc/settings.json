@@ -3,8 +3,8 @@
     "*"
   ],
   "database_uri": "postgresql://postgres:postgres@autom8_db:5432/autom8_db",
-  "CLIENT_ID": "205711707476-ckfeshqc4uhsbct0h1m28u90soh217cl.apps.googleusercontent.com",
-  "CLIENT_SECRET": "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",
+  "CLIENT_ID": "541897888013-l65co7aigf95et2ku1gblnseoagk1qm6.apps.googleusercontent.com",
+  "CLIENT_SECRET": "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",
   "REDIRECT_URI": "https://www.autom8games.com/callback",
   "SCOPES": [
     "openid",
