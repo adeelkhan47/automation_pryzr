@@ -24,6 +24,7 @@ def process_new(self, *args, **kwargs):
             emails = get_emails(each.user_auth, 20)
             for email in emails:
                 subject = email["subject"]
+
                 # logging.info(subject)
                 sender_email = email["sender"]
                 existing_email = session.query(Email).filter_by(email_id=email["email_id"]).first()
@@ -44,7 +45,7 @@ def process_new(self, *args, **kwargs):
                                 if "$" in each_subject_ele:
                                     amount = each_subject_ele.replace("$", "")
                                     amount = math.floor(float(amount))
-                            logging.info(f'{subject_platform}-{second_last}-{amount}')
+                            #logging.info(f'{subject_platform}-{second_last}-{amount}')
                             if subject_platform.lower() == "t" or subject_platform.lower() == "taichi":
 
                                 platform = Platforms.Taichi.value
@@ -60,7 +61,7 @@ def process_new(self, *args, **kwargs):
                                 elif not amount:
                                     reason = "Amount not Found."
                                 else:
-                                    logging.info(f"{second_last} ---- ${amount}")
+                                    #logging.info(f"{second_last} ---- ${amount}")
                                     platform_response, msg = taichi(second_last, int(amount), creds[0], creds[1])
                                     # platform_response, msg = taichi("test123", 1, creds[0], creds[1])
                                     if platform_response == True:
@@ -123,7 +124,7 @@ def process_new(self, *args, **kwargs):
                                 elif not amount:
                                     reason = "Amount not Found."
                                 else:
-                                    logging.info(f"{second_last} ---- ${amount}")
+                                    #logging.info(f"{second_last} ---- ${amount}")
                                     # platform_response, msg = kirin("Test000_", int(amount), creds[0], creds[1])
                                     platform_response, msg = orionstar(second_last, int(amount), creds[0], creds[1])
                                     # platform_response, msg = taichi("test123", 1, creds[0], creds[1])
@@ -155,7 +156,7 @@ def process_new(self, *args, **kwargs):
                                 elif not amount:
                                     reason = "Amount not Found."
                                 else:
-                                    logging.info(f"{second_last} ---- ${amount}")
+                                    #logging.info(f"{second_last} ---- ${amount}")
                                     # platform_response, msg = vblink("test000111", int(amount), creds[0], creds[1])
                                     platform_response, msg = vblink(second_last, int(amount), creds[0], creds[1])
                                     # platform_response, msg = taichi("test123", 1, creds[0], creds[1])
@@ -198,6 +199,7 @@ def process_new(self, *args, **kwargs):
                         user_email = UserEmail(user_id=each.id, email_id=new_email.id)
                         session.add(user_email)
                         session.commit()
+                        logging.error(f"{each.email} Success.")
 
                 except Exception as e:
                     logging.exception(e)
@@ -214,4 +216,3 @@ def process_new(self, *args, **kwargs):
                     session.commit()
         except Exception as e:
             logging.error(f"{each.email} Failed.")
-            logging.exception(e)
