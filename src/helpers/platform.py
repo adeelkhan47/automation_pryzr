@@ -53,17 +53,15 @@ def taichi(userid, amount, username, password):
     # options.add_argument("--no-sandbox")
     # options.add_argument("--disable-dev-shm-usage")
     # driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    options = uc.ChromeOptions()
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    driver = uc.Chrome(options=options, browser_executable_path='/usr/bin/google-chrome-stable')
+    wait = WebDriverWait(driver, 2)
+    status = False
+    msg = ""
     try:
-        options = uc.ChromeOptions()
-        options.add_argument("--headless")
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-dev-shm-usage")
-        # driver = uc.Chrome(options=options, browser_executable_path='/usr/bin/google-chrome-stable')
-        driver = uc.Chrome(options=options, executable_path=ChromeDriverManager().install())
-        wait = WebDriverWait(driver, 2)
-        status = False
-        msg = ""
-
         # Navigate to the login page
         driver.get("https://taichimasterpay.com/")
 
@@ -121,18 +119,15 @@ def kirin(userid, amount, username, password):
     # options.add_argument("--no-sandbox")
     # options.add_argument("--disable-dev-shm-usage")
     # driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    options = uc.ChromeOptions()
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    driver = uc.Chrome(options=options, browser_executable_path='/usr/bin/google-chrome-stable')
+    wait = WebDriverWait(driver, 2)
+    status = False
+    msg = ""
     try:
-        options = uc.ChromeOptions()
-        options.add_argument("--headless")
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-dev-shm-usage")
-        #driver = uc.Chrome(options=options, browser_executable_path='/usr/bin/google-chrome-stable')
-        driver = uc.Chrome(options=options, executable_path=ChromeDriverManager().install())
-
-        wait = WebDriverWait(driver, 2)
-        status = False
-        msg = ""
-
         # Navigate to the login page
         driver.get("https://firekirin.xyz:8888/")
 
@@ -222,17 +217,15 @@ def vblink(userid, amount, username, password):
     # options.add_argument("--disable-dev-shm-usage")
     # driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
     ##
+    options = uc.ChromeOptions()
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    driver = uc.Chrome(options=options, browser_executable_path='/usr/bin/google-chrome-stable')
+    ##
+    status = False
+    msg = ""
     try:
-        options = uc.ChromeOptions()
-        options.add_argument("--headless")
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-dev-shm-usage")
-        # driver = uc.Chrome(options=options, browser_executable_path='/usr/bin/google-chrome-stable')
-        driver = uc.Chrome(options=options, executable_path=ChromeDriverManager().install())
-        ##
-        status = False
-        msg = ""
-
         # Navigate to the login page
         driver.get("https://gm.vblink777.club/#/login?redirect=%2Fmanage-user%2Faccount")
         wait = WebDriverWait(driver, 15)
@@ -309,17 +302,16 @@ def orionstar(userid, amount, username, password):
     # path_to_driver = ChromeDriverManager().install()
     # driver = webdriver.Chrome( options=options)
     ##
+    options = uc.ChromeOptions()
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    driver = uc.Chrome(options=options, browser_executable_path='/usr/bin/google-chrome-stable')
+    ##
+    wait = WebDriverWait(driver, 2)
+    status = False
+    msg = ""
     try:
-        options = uc.ChromeOptions()
-        options.add_argument("--headless")
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-dev-shm-usage")
-        #driver = uc.Chrome(options=options, browser_executable_path='/usr/bin/google-chrome-stable')
-        driver = uc.Chrome(options=options, executable_path=ChromeDriverManager().install())
-        ##
-        wait = WebDriverWait(driver, 2)
-        status = False
-        msg = ""
         # Navigate to the login page
         driver.get("https://orionstars.vip:8781/")
 

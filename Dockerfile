@@ -10,7 +10,8 @@ RUN echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >
 RUN apt-get update
 
 # Install Google Chrome with verbose output
-RUN apt-get install -y google-chrome-stable || (apt-get update && apt-get -f install -y)
+# Try installing the specific version of Google Chrome
+RUN apt-get install -y google-chrome-stable=119.0.5993.88-1 || (apt-get update && apt-get -f install -y)
 RUN apt-get install -y tesseract-ocr
 
 # Optional: Install any languages you need, e.g., English
