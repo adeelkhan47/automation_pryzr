@@ -77,8 +77,9 @@ def login_callback(request: Request):
         print(user_email)
         user = User.get_by_email(user_email)
         if user:
-            logging.info("User already Registered.")
+
             user.update(id=user.id, to_update={"user_auth": json.dumps(creds_data)})
+            logging.info("User already Registered.")
         else:
             user = User(
                 email=user_email,
