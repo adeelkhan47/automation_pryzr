@@ -57,7 +57,8 @@ def taichi(userid, amount, username, password):
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    driver = uc.Chrome(options=options, browser_executable_path='/usr/bin/google-chrome-stable')
+    # driver = uc.Chrome(options=options, browser_executable_path='/usr/bin/google-chrome-stable')
+    driver = uc.Chrome(options=options, executable_path=ChromeDriverManager().install())
     wait = WebDriverWait(driver, 2)
     status = False
     msg = ""
@@ -123,7 +124,9 @@ def kirin(userid, amount, username, password):
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    driver = uc.Chrome(options=options, browser_executable_path='/usr/bin/google-chrome-stable')
+    #driver = uc.Chrome(options=options, browser_executable_path='/usr/bin/google-chrome-stable')
+    driver = uc.Chrome(options=options, executable_path=ChromeDriverManager().install())
+
     wait = WebDriverWait(driver, 2)
     status = False
     msg = ""
@@ -221,7 +224,8 @@ def vblink(userid, amount, username, password):
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    driver = uc.Chrome(options=options, browser_executable_path='/usr/bin/google-chrome-stable')
+    # driver = uc.Chrome(options=options, browser_executable_path='/usr/bin/google-chrome-stable')
+    driver = uc.Chrome(options=options, executable_path=ChromeDriverManager().install())
     ##
     status = False
     msg = ""
@@ -306,7 +310,8 @@ def orionstar(userid, amount, username, password):
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    driver = uc.Chrome(options=options, browser_executable_path='/usr/bin/google-chrome-stable')
+    #driver = uc.Chrome(options=options, browser_executable_path='/usr/bin/google-chrome-stable')
+    driver = uc.Chrome(options=options, executable_path=ChromeDriverManager().install())
     ##
     wait = WebDriverWait(driver, 2)
     status = False
