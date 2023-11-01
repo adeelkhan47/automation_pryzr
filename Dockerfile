@@ -2,17 +2,17 @@ FROM --platform=linux/amd64 python:3.9
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
-    dpkg -i google-chrome-stable_current_amd64.deb && \
-    apt-get install -f -y && \
-    rm google-chrome-stable_current_amd64.deb
+# Add Google Chrome to the repositories
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
+RUN echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list
 
-# Manually download and install ChromeDriver for version 118.0.5993.88
-RUN wget https://chromedriver.storage.googleapis.com/118.0.5993.88/chromedriver_linux64.zip && \
-    unzip chromedriver_linux64.zip && \
-    mv chromedriver /usr/bin/chromedriver && \
-    chmod +x /usr/bin/chromedriver && \
-    rm chromedriver_linux64.zip
+# Update the packages
+RUN apt-get update
+
+# Install Google Chrome with verbose output
+RUN apt-get install -y google-chrome-stable || (apt-get update && apt-get -f install -y)
+
+
 
 
 RUN apt-get install -y tesseract-ocr

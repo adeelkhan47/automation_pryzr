@@ -57,8 +57,8 @@ def taichi(userid, amount, username, password):
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    options.binary_location = '/usr/bin/google-chrome-stable'
-    driver = uc.Chrome(executable_path='/usr/bin/chromedriver', options=options)
+    driver = uc.Chrome(options=options, browser_executable_path='/usr/bin/google-chrome-stable')
+
     wait = WebDriverWait(driver, 2)
 
     status = False
@@ -125,8 +125,7 @@ def kirin(userid, amount, username, password):
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    options.binary_location = '/usr/bin/google-chrome-stable'
-    driver = uc.Chrome(executable_path='/usr/bin/chromedriver', options=options)
+    driver = uc.Chrome(options=options, browser_executable_path='/usr/bin/google-chrome-stable')
     wait = WebDriverWait(driver, 2)
 
     status = False
@@ -225,8 +224,7 @@ def vblink(userid, amount, username, password):
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    options.binary_location = '/usr/bin/google-chrome-stable'
-    driver = uc.Chrome(executable_path='/usr/bin/chromedriver', options=options)
+    driver = uc.Chrome(options=options, browser_executable_path='/usr/bin/google-chrome-stable')
     wait = WebDriverWait(driver, 2)
 
     status = False
@@ -310,8 +308,7 @@ def orionstar(userid, amount, username, password):
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    options.binary_location = '/usr/bin/google-chrome-stable'
-    driver = uc.Chrome(executable_path='/usr/bin/chromedriver', options=options)
+    driver = uc.Chrome(options=options, browser_executable_path='/usr/bin/google-chrome-stable')
     wait = WebDriverWait(driver, 2)
 
     status = False
