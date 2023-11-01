@@ -8,11 +8,18 @@ RUN echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >
 
 # Update the packages
 RUN apt-get update
-
 # Install Google Chrome with verbose output
 RUN apt-get install -y google-chrome-stable || (apt-get update && apt-get -f install -y)
 
 
+
+RUN wget https://chromedriver.storage.googleapis.com/118.0.5993.88/chromedriver_linux64.zip && \
+    unzip chromedriver_linux64.zip && \
+    mv chromedriver /usr/bin/chromedriver && \
+    chmod +x /usr/bin/chromedriver && \
+    rm chromedriver_linux64.zip
+
+RUN apt-get update
 
 
 RUN apt-get install -y tesseract-ocr
