@@ -10,6 +10,7 @@ RUN echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >
 RUN apt-get update
 # Install Google Chrome with verbose output
 RUN apt-get install -y google-chrome-stable || (apt-get update && apt-get -f install -y)
+RUN google-chrome --version
 
 
 
