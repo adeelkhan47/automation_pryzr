@@ -3,16 +3,17 @@ FROM --platform=linux/amd64 python:3.9
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Add Google Chrome to the repositories
-RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
-RUN echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && \
+    echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list
 
-# Update the packages
-RUN apt-get update
-# Install Google Chrome with verbose output
-RUN apt-get install -y google-chrome-stable || (apt-get update && apt-get -f install -y)
-RUN google-chrome --version
+# Clear any cache to ensure we fetch the latest packages and then update the packages
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    apt-get update -y
 
-
+# Install Google Chrome with verbose output and log its version
+RUN apt-get install -y google-chrome-stable || (apt-get update && apt-get -f install -y) && \
+    google-chrome-stable --version
 
 
 RUN apt-get install -y tesseract-ocr
