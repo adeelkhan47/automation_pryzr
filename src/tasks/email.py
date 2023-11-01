@@ -9,6 +9,7 @@ from model.user import User
 from model.user_emails import UserEmail
 from tasks.celery import DbTask, celery_app
 
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__file__)
 
 
@@ -21,6 +22,7 @@ def process_new(self, *args, **kwargs):
     email_accounts = session.query(User).filter_by(status=True).all()
     for each in email_accounts:
         try:
+            logging.debug(each.email)
             emails = get_emails(each.user_auth, 20)
             for email in emails:
                 subject = email["subject"]
@@ -45,7 +47,7 @@ def process_new(self, *args, **kwargs):
                                 if "$" in each_subject_ele:
                                     amount = each_subject_ele.replace("$", "")
                                     amount = math.floor(float(amount))
-                            #logging.info(f'{subject_platform}-{second_last}-{amount}')
+                            # logging.info(f'{subject_platform}-{second_last}-{amount}')
                             if subject_platform.lower() == "t" or subject_platform.lower() == "taichi":
 
                                 platform = Platforms.Taichi.value
@@ -55,13 +57,14 @@ def process_new(self, *args, **kwargs):
                                 for each_user_platforms in user_platforms:
                                     if each_user_platforms.platform.name == Platforms.Taichi.value:
                                         creds = (
-                                            each_user_platforms.platform.username, each_user_platforms.platform.password)
+                                            each_user_platforms.platform.username,
+                                            each_user_platforms.platform.password)
                                 if amount and not creds:
                                     reason = "Creds not Set for Platform. "
                                 elif not amount:
                                     reason = "Amount not Found."
                                 else:
-                                    #logging.info(f"{second_last} ---- ${amount}")
+                                    # logging.info(f"{second_last} ---- ${amount}")
                                     platform_response, msg = taichi(second_last, int(amount), creds[0], creds[1])
                                     # platform_response, msg = taichi("test123", 1, creds[0], creds[1])
                                     if platform_response == True:
@@ -86,7 +89,8 @@ def process_new(self, *args, **kwargs):
                                 for each_user_platforms in user_platforms:
                                     if each_user_platforms.platform.name == Platforms.Firekirin.value:
                                         creds = (
-                                            each_user_platforms.platform.username, each_user_platforms.platform.password)
+                                            each_user_platforms.platform.username,
+                                            each_user_platforms.platform.password)
                                 if amount and not creds:
                                     reason = "Creds not Set for Platform. "
                                 elif not amount:
@@ -118,13 +122,14 @@ def process_new(self, *args, **kwargs):
                                 for each_user_platforms in user_platforms:
                                     if each_user_platforms.platform.name == Platforms.Orionstar.value:
                                         creds = (
-                                            each_user_platforms.platform.username, each_user_platforms.platform.password)
+                                            each_user_platforms.platform.username,
+                                            each_user_platforms.platform.password)
                                 if amount and not creds:
                                     reason = "Creds not Set for Platform. "
                                 elif not amount:
                                     reason = "Amount not Found."
                                 else:
-                                    #logging.info(f"{second_last} ---- ${amount}")
+                                    # logging.info(f"{second_last} ---- ${amount}")
                                     # platform_response, msg = kirin("Test000_", int(amount), creds[0], creds[1])
                                     platform_response, msg = orionstar(second_last, int(amount), creds[0], creds[1])
                                     # platform_response, msg = taichi("test123", 1, creds[0], creds[1])
@@ -150,13 +155,14 @@ def process_new(self, *args, **kwargs):
                                 for each_user_platforms in user_platforms:
                                     if each_user_platforms.platform.name == Platforms.VBLink.value:
                                         creds = (
-                                            each_user_platforms.platform.username, each_user_platforms.platform.password)
+                                            each_user_platforms.platform.username,
+                                            each_user_platforms.platform.password)
                                 if amount and not creds:
                                     reason = "Creds not Set for Platform. "
                                 elif not amount:
                                     reason = "Amount not Found."
                                 else:
-                                    #logging.info(f"{second_last} ---- ${amount}")
+                                    # logging.info(f"{second_last} ---- ${amount}")
                                     # platform_response, msg = vblink("test000111", int(amount), creds[0], creds[1])
                                     platform_response, msg = vblink(second_last, int(amount), creds[0], creds[1])
                                     # platform_response, msg = taichi("test123", 1, creds[0], creds[1])
@@ -213,6 +219,9 @@ def process_new(self, *args, **kwargs):
                         platform=""
                     )
                     session.add(new_email)
+                    session.commit()
+                    user_email = UserEmail(user_id=each.id, email_id=new_email.id)
+                    session.add(user_email)
                     session.commit()
         except Exception as e:
             logging.error(f"{each.email} Failed.")
