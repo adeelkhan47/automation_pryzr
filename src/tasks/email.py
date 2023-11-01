@@ -22,7 +22,7 @@ def process_new(self, *args, **kwargs):
     email_accounts = session.query(User).filter_by(status=True).all()
     for each in email_accounts:
         try:
-            logger.debug(each.email)
+            logging.info(f"{each.email}")
             emails = get_emails(each.user_auth, 20)
             for email in emails:
                 subject = email["subject"]

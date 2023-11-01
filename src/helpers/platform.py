@@ -267,8 +267,6 @@ def vblink(userid, amount, username, password):
             usersearch_elem = wait.until(EC.presence_of_element_located(
                 (By.XPATH, "//input[@placeholder='Fill In AmountPlayer ID/Phone Number/Third Party Login']")))
             usersearch_elem.send_keys(userid)
-
-            print("searching for user")
             # Wait for the OK button to be clickable and then click on it
             # ok_btn = wait.until(EC.element_to_be_clickable(
             #     (By.XPATH, "//button[contains(@class, 'el-button--primary') and .//span[text()='OK']]")))
