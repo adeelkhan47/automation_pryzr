@@ -57,9 +57,10 @@ def taichi(userid, amount, username, password):
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
+    options.binary_location = '/usr/bin/google-chrome-stable'
     # driver = uc.Chrome(options=options, browser_executable_path='/usr/bin/google-chrome-stable')
-    driver_path = ChromeDriverManager("118.0.5993.70").install()
-    driver = uc.Chrome(options=options, executable_path=driver_path)
+    #ChromeDriverManager().driver_cache.clear()
+    driver = uc.Chrome(options=options)
 
     wait = WebDriverWait(driver, 2)
     status = False
@@ -126,9 +127,10 @@ def kirin(userid, amount, username, password):
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
+    options.binary_location = '/usr/bin/google-chrome-stable'
     # driver = uc.Chrome(options=options, browser_executable_path='/usr/bin/google-chrome-stable')
-    driver_path = ChromeDriverManager("118.0.5993.70").install()
-    driver = uc.Chrome(options=options, executable_path=driver_path)
+    # ChromeDriverManager().driver_cache.clear()
+    driver = uc.Chrome(options=options)
 
     wait = WebDriverWait(driver, 2)
     status = False
@@ -227,10 +229,10 @@ def vblink(userid, amount, username, password):
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
+    options.binary_location = '/usr/bin/google-chrome-stable'
     # driver = uc.Chrome(options=options, browser_executable_path='/usr/bin/google-chrome-stable')
-    # driver = uc.Chrome(options=options, executable_path=ChromeDriverManager().install())
-    driver_path = ChromeDriverManager("118.0.5993.70").install()
-    driver = uc.Chrome(options=options, executable_path=driver_path)
+    # ChromeDriverManager().driver_cache.clear()
+    driver = uc.Chrome(options=options)
 
     status = False
     msg = ""
@@ -315,10 +317,10 @@ def orionstar(userid, amount, username, password):
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
+    options.binary_location = '/usr/bin/google-chrome-stable'
     # driver = uc.Chrome(options=options, browser_executable_path='/usr/bin/google-chrome-stable')
-    # driver = uc.Chrome(options=options, executable_path=ChromeDriverManager().install())
-    driver_path = ChromeDriverManager("118.0.5993.70").install()
-    driver = uc.Chrome(options=options, executable_path=driver_path)
+    # ChromeDriverManager().driver_cache.clear()
+    driver = uc.Chrome(options=options)
 
     wait = WebDriverWait(driver, 2)
     status = False
