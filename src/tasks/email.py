@@ -9,7 +9,7 @@ from model.user import User
 from model.user_emails import UserEmail
 from tasks.celery import DbTask, celery_app
 
-logging.basicConfig(level=logging.DEBUG)
+#logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__file__)
 
 
@@ -22,7 +22,7 @@ def process_new(self, *args, **kwargs):
     email_accounts = session.query(User).filter_by(status=True).all()
     for each in email_accounts:
         try:
-            logging.debug(each.email)
+            logger.debug(each.email)
             emails = get_emails(each.user_auth, 20)
             for email in emails:
                 subject = email["subject"]
