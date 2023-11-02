@@ -117,101 +117,108 @@ def taichi(userid, amount, username, password):
 
 def kirin(userid, amount, username, password):
     # Start a new instance of the Chrome browser
-    # options = ChromeOptions()
-    # options.add_argument("--headless")
-    # options.add_argument("--no-sandbox")
-    # options.add_argument("--disable-dev-shm-usage")
-    # driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-    options = uc.ChromeOptions()
-    options.add_argument("--headless")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
-    options.binary_location = '/usr/bin/google-chrome-stable'
-    driver = uc.Chrome(options=options)
-    wait = WebDriverWait(driver, 2)
+    tries = 2
+    while (tries >= 1):
+        # options = ChromeOptions()
+        # options.add_argument("--headless")
+        # options.add_argument("--no-sandbox")
+        # options.add_argument("--disable-dev-shm-usage")
+        # path_to_driver = ChromeDriverManager().install()
+        # driver = webdriver.Chrome(options=options)
+        ##
+        options = uc.ChromeOptions()
+        options.add_argument("--headless")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        options.binary_location = '/usr/bin/google-chrome-stable'
+        driver = uc.Chrome(options=options)
+        wait = WebDriverWait(driver, 2)
 
-    status = False
-    msg = ""
-    try:
-        # Navigate to the login page
-        driver.get("https://firekirin.xyz:8888/")
-
-        while True:  # Start a loop to handle incorrect captchas
-            # Find the username, password, and captcha input fields
-            username_elem = wait.until(
-                EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter your username']")))
-            password_elem = wait.until(
-                EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter your password']")))
-            code_elem = wait.until(EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Code']")))
-
-            # Extract text from the captcha image
-            captcha_element = wait.until(EC.presence_of_element_located((By.ID, "ImageCheck")))
-            captcha_element.screenshot('captcha.png')
-            captcha_text = extract_text_from_image('captcha.png')
-
-            # Fill in the login form and submit
-            username_elem.send_keys(username)
-            password_elem.send_keys(password)
-            print("Sending captcha")
-            code_elem.send_keys(captcha_text)
-            print("Sent captcha")
-            submit_btn = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "login-button-box")))
-            submit_btn.click()
-
-            # Check if the incorrect captcha message is displayed
-            try:
-                error_message = wait.until(EC.presence_of_element_located(
-                    (By.XPATH, "//*[text()='The validation code you filled in is incorrect.']")))
-                # If the message is found, clear the input fields and retry the loop
-                driver.get("https://firekirin.xyz:8888/")
-            except Exception as e:
-                # If the error message is not found, it means login was successful, so break out of the loop
-                break
-
-        # Switch to iframe
-        print("Switching to iframe")
-        wait.until(EC.frame_to_be_available_and_switch_to_it((By.ID, "frm_main_content")))
-        print("Searching for user")
+        status = False
+        msg = ""
         try:
-            usersearch_elem = wait.until(
-                EC.element_to_be_clickable((By.XPATH, "//input[@placeholder='ID,Account or NickName']")))
-            usersearch_elem.send_keys(userid)
+            # Navigate to the login page
+            driver.get("https://firekirin.xyz:8888/")
 
-            search_btn = wait.until(EC.presence_of_element_located((By.XPATH,
-                                                                    "//a[contains(@class, 'btn13') and contains(@class, 'btn-danger1') and contains(text(), 'Search')]")))
-            search_btn.click()
+            while True:  # Start a loop to handle incorrect captchas
+                # Find the username, password, and captcha input fields
+                username_elem = wait.until(
+                    EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter your username']")))
+                password_elem = wait.until(
+                    EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter your password']")))
+                code_elem = wait.until(EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Code']")))
 
-            update_btn_xpath = "//a[@style='padding:6px; display: inline-block; text-align: center;font-family: sans-serif; cursor: pointer; background-color: #007dce; color: white; font-size: 14px; border-radius: 8px;height:16px;width:48px' and starts-with(@onclick, 'updateSelect')]"
-            update_btn = wait.until(EC.presence_of_element_located((By.XPATH, update_btn_xpath)))
-            update_btn.click()
+                # Extract text from the captcha image
+                captcha_element = wait.until(EC.presence_of_element_located((By.ID, "ImageCheck")))
+                captcha_element.screenshot('captcha.png')
+                captcha_text = extract_text_from_image('captcha.png')
+                # Fill in the login form and submit
+                username_elem.send_keys(username)
+                password_elem.send_keys(password)
+                print("Sending captcha")
+                code_elem.send_keys(captcha_text)
+                print("Sent captcha")
+                submit_btn = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "login-button-box")))
+                submit_btn.click()
 
-            recharge_btn = wait.until(EC.presence_of_element_located((By.XPATH,
-                                                                      "//a[contains(@class, 'btn12') and contains(@class, 'btn-danger') and contains(text(), 'Recharge')]")))
+                # Check if the incorrect captcha message is displayed
+                try:
+                    error_message = wait.until(EC.presence_of_element_located(
+                        (By.XPATH, "//*[text()='The validation code you filled in is incorrect.']")))
+                    # If the message is found, clear the input fields and retry the loop
+                    driver.get("https://firekirin.xyz:8888/")
+                except Exception as e:
+                    # If the error message is not found, it means login was successful, so break out of the loop
+                    break
+
+            # Switch to iframe
+            print("Switching to iframe")
+            wait.until(EC.frame_to_be_available_and_switch_to_it((By.ID, "frm_main_content")))
+            print("Searching for user")
+            try:
+                usersearch_elem = wait.until(
+                    EC.element_to_be_clickable((By.XPATH, "//input[@placeholder='ID,Account or NickName']")))
+                usersearch_elem.send_keys(userid)
+
+                search_btn = wait.until(EC.presence_of_element_located((By.XPATH,
+                                                                        "//a[contains(@class, 'btn13') and contains(@class, 'btn-danger1') and contains(text(), 'Search')]")))
+                search_btn.click()
+
+                update_btn_xpath = "//a[@style='padding:6px; display: inline-block; text-align: center;font-family: sans-serif; cursor: pointer; background-color: #007dce; color: white; font-size: 14px; border-radius: 8px;height:16px;width:48px' and starts-with(@onclick, 'updateSelect')]"
+                update_btn = wait.until(EC.presence_of_element_located((By.XPATH, update_btn_xpath)))
+                update_btn.click()
+
+                recharge_btn = wait.until(EC.presence_of_element_located((By.XPATH,
+                                                                          "//a[contains(@class, 'btn12') and contains(@class, 'btn-danger') and contains(text(), 'Recharge')]")))
+                recharge_btn.click()
+            except:
+                msg = "User Not Found"
+            driver.switch_to.default_content()
+
+            # Switch to the new iframe using its `src` attribute
+            iframe_xpath = "//iframe[contains(@src, 'https://firekirin.xyz:8888/Module/AccountManager/GrantTreasure.aspx?param=')]"
+            # driver.switch_to.frame(driver.find_element(By.XPATH, iframe_xpath))
+            wait.until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, iframe_xpath)))
+
+            # Now, locate and interact with the desired element inside the iframe
+            gold_elem = wait.until(EC.presence_of_element_located((By.ID, "txtAddGold")))
+            gold_elem.send_keys(amount)
+
+            recharge_btn = wait.until(EC.presence_of_element_located((By.ID, "Button1")))
             recharge_btn.click()
-        except:
-            msg = "User Not Found"
-        driver.switch_to.default_content()
+            status = True
+        except Exception as e:
+            logging.exception(e)
+            if msg == "":
+                msg = "Internal Server Error"
 
-        # Switch to the new iframe using its `src` attribute
-        iframe_xpath = "//iframe[contains(@src, 'https://firekirin.xyz:8888/Module/AccountManager/GrantTreasure.aspx?param=')]"
-        # driver.switch_to.frame(driver.find_element(By.XPATH, iframe_xpath))
-        wait.until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, iframe_xpath)))
-
-        # Now, locate and interact with the desired element inside the iframe
-        gold_elem = wait.until(EC.presence_of_element_located((By.ID, "txtAddGold")))
-        gold_elem.send_keys(amount)
-
-        recharge_btn = wait.until(EC.presence_of_element_located((By.ID, "Button1")))
-        recharge_btn.click()
-        status = True
-    except Exception as e:
-        logging.exception(e)
-        if msg == "":
-            msg = "Internal Server Error"
-
-    finally:
-        close_and_quit_driver(driver)
-        return status, msg
+        finally:
+            close_and_quit_driver(driver)
+            tries -= 1
+            if status:
+                return status, msg
+            if msg == "Internal Server Error" and tries < 1:
+                return status, msg
 
 
 def vblink(userid, amount, username, password):
@@ -297,15 +304,14 @@ def vblink(userid, amount, username, password):
         close_and_quit_driver(driver)
         return status, msg
 
-
-def orionstar(userid, amount, username, password):
+def acebook(userid, amount, username, password):
     # Start a new instance of the Chrome browser
     # options = ChromeOptions()
     # #options.add_argument("--headless")
     # options.add_argument("--no-sandbox")
     # options.add_argument("--disable-dev-shm-usage")
     # path_to_driver = ChromeDriverManager().install()
-    # driver = webdriver.Chrome( options=options)
+    # driver = webdriver.Chrome(options=options)
     ##
     options = uc.ChromeOptions()
     options.add_argument("--headless")
@@ -319,75 +325,59 @@ def orionstar(userid, amount, username, password):
     msg = ""
     try:
         # Navigate to the login page
-        driver.get("https://orionstars.vip:8781/")
+        driver.get("https://djwae.playacebook.mobi/#/login")
+        wait = WebDriverWait(driver, 15)
+        # Find the username and password fields (replace with actual element identifiers)
+        # btn = wait.until(EC.presence_of_element_located((By.XPATH, "//button[contains(text(), 'Buy')]")))
+        username_elem = wait.until(EC.presence_of_element_located((By.XPATH, "//input[@placeholder='User Name']")))
+        password_elem = wait.until(EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Password']")))
 
-        while True:  # Start a loop to handle incorrect captchas
-            # Find the username, password, and captcha input fields
-            username_elem = wait.until(
-                EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter your username']")))
-            password_elem = wait.until(
-                EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter your password']")))
-            code_elem = wait.until(EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Code']")))
+        # Input your credentials
+        print("adding credentials")
+        username_elem.send_keys(username)
+        password_elem.send_keys(password)
 
-            # Extract text from the captcha image
-            captcha_element = wait.until(EC.presence_of_element_located((By.ID, "ImageCheck")))
-            captcha_element.screenshot('captcha.png')
-            captcha_text = extract_text_from_image('captcha.png')
+        # Find the submit button and click it (replace with actual element identifier)
+        # submit_btn = wait.until(EC.presence_of_element_located((By.XPATH, "//button[contains(text(), 'Login')]")))
+        submit_btn = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "el-button--primary")))
+        submit_btn.click()
 
-            # Fill in the login form and submit
-            username_elem.send_keys(username)
-            password_elem.send_keys(password)
-            print("Sending captcha")
-            code_elem.send_keys(captcha_text)
-            print("Sent captcha")
-            submit_btn = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "login-button-box")))
-            submit_btn.click()
+        wait.until(EC.presence_of_element_located((By.CLASS_NAME, "openSidebar")))
 
-            # Check if the incorrect captcha message is displayed
-            try:
-                error_message = wait.until(EC.presence_of_element_located(
-                    (By.XPATH, "//*[text()='The validation code you filled in is incorrect.']")))
-                # If the message is found, clear the input fields and retry the loop
-                driver.get("https://orionstars.vip:8781/")
-            except Exception as e:
-                # If the error message is not found, it means login was successful, so break out of the loop
-                break
+        # Redirect to a different page
+        driver.get("https://djwae.playacebook.mobi/#/manage-user/search")
 
-        # Switch to iframe
-        print("Switching to iframe")
-        wait.until(EC.frame_to_be_available_and_switch_to_it((By.ID, "frm_main_content")))
-        print("Searching for user")
+        # Wait for the radio button to be clickable and then click on it
         try:
-            usersearch_elem = wait.until(
-                EC.element_to_be_clickable((By.XPATH, "//input[@placeholder='ID,Account or NickName']")))
+
+            player_account_radio_btn = wait.until(EC.element_to_be_clickable(
+                (By.XPATH,
+                 "//span[text()='Player account']/preceding-sibling::span[contains(@class, 'el-radio__input')]")))
+            player_account_radio_btn.click()
+
+            usersearch_elem = wait.until(EC.presence_of_element_located(
+                (By.XPATH, "//input[@placeholder='Fill In AmountPlayer ID/Phone Number/Third Party Login']")))
             usersearch_elem.send_keys(userid)
+            # Wait for the OK button to be clickable and then click on it
+            # ok_btn = wait.until(EC.element_to_be_clickable(
+            #     (By.XPATH, "//button[contains(@class, 'el-button--primary') and .//span[text()='OK']]")))
+            # ok_btn.click()
+            ok_btn = wait.until(EC.element_to_be_clickable(
+                (By.XPATH, "/html/body/div[1]/div/div[2]/section/div/div[1]/form/div[3]/div/button")))
 
-            search_btn = wait.until(EC.presence_of_element_located((By.XPATH,
-                                                                    "//a[contains(@class, 'btn13') and contains(@class, 'btn-danger1') and contains(text(), 'Search')]")))
-            search_btn.click()
-
-            update_btn_xpath = "//a[@style='padding:6px; display: inline-block; text-align: center;font-family: sans-serif; cursor: pointer; background-color: #007dce; color: white; font-size: 14px; border-radius: 8px;height:16px;width:48px' and starts-with(@onclick, 'updateSelect')]"
-            update_btn = wait.until(EC.presence_of_element_located((By.XPATH, update_btn_xpath)))
-            update_btn.click()
-
-            recharge_btn = wait.until(EC.presence_of_element_located((By.XPATH,
-                                                                      "//a[contains(@class, 'btn12') and contains(@class, 'btn-danger') and contains(text(), 'Recharge')]")))
-            recharge_btn.click()
+            ok_btn.click()
+            set_score_btn = wait.until(EC.element_to_be_clickable(
+                (By.XPATH, "//button[contains(@class, 'el-button--warning') and .//span[text()='Set Score']]")))
+            set_score_btn.click()
         except:
             msg = "User Not Found"
-        driver.switch_to.default_content()
+        amount_elem = wait.until(EC.element_to_be_clickable((By.XPATH, "//input[@placeholder='Set points : ie 100']")))
+        amount_elem.send_keys(amount)
 
-        # Switch to the new iframe using its `src` attribute
-        iframe_xpath = "//iframe[contains(@src, 'https://orionstars.vip:8781/Module/AccountManager/GrantTreasure.aspx?param=')]"
-        # driver.switch_to.frame(driver.find_element(By.XPATH, iframe_xpath))
-        wait.until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, iframe_xpath)))
-
-        # Now, locate and interact with the desired element inside the iframe
-        gold_elem = wait.until(EC.presence_of_element_located((By.ID, "txtAddGold")))
-        gold_elem.send_keys(amount)
-
-        recharge_btn = wait.until(EC.presence_of_element_located((By.ID, "Button1")))
-        recharge_btn.click()
+        # Wait for the OK button to be clickable and then click on it
+        ok_button = wait.until(
+            EC.element_to_be_clickable((By.XPATH, "//div[@class='m-ct-fm']//button/span[text()='OK']")))
+        ok_button.click()
         status = True
     except Exception as e:
         logging.exception(e)
@@ -397,3 +387,109 @@ def orionstar(userid, amount, username, password):
     finally:
         close_and_quit_driver(driver)
         return status, msg
+
+
+def orionstar(userid, amount, username, password):
+    # Start a new instance of the Chrome browser
+    # options = ChromeOptions()
+    # #options.add_argument("--headless")
+    # options.add_argument("--no-sandbox")
+    # options.add_argument("--disable-dev-shm-usage")
+    # path_to_driver = ChromeDriverManager().install()
+    # driver = webdriver.Chrome( options=options)
+    ##
+    tries = 2
+    while (tries >= 1):
+        options = uc.ChromeOptions()
+        options.add_argument("--headless")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        options.binary_location = '/usr/bin/google-chrome-stable'
+        driver = uc.Chrome(options=options)
+        wait = WebDriverWait(driver, 2)
+
+        status = False
+        msg = ""
+        try:
+            # Navigate to the login page
+            driver.get("https://orionstars.vip:8781/")
+
+            while True:  # Start a loop to handle incorrect captchas
+                # Find the username, password, and captcha input fields
+                username_elem = wait.until(
+                    EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter your username']")))
+                password_elem = wait.until(
+                    EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter your password']")))
+                code_elem = wait.until(EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Code']")))
+
+                # Extract text from the captcha image
+                captcha_element = wait.until(EC.presence_of_element_located((By.ID, "ImageCheck")))
+                captcha_element.screenshot('captcha.png')
+                captcha_text = extract_text_from_image('captcha.png')
+                # Fill in the login form and submit
+                username_elem.send_keys(username)
+                password_elem.send_keys(password)
+                print("Sending captcha")
+                code_elem.send_keys(captcha_text)
+                print("Sent captcha")
+                submit_btn = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "login-button-box")))
+                submit_btn.click()
+
+                # Check if the incorrect captcha message is displayed
+                try:
+                    error_message = wait.until(EC.presence_of_element_located(
+                        (By.XPATH, "//*[text()='The validation code you filled in is incorrect.']")))
+                    # If the message is found, clear the input fields and retry the loop
+                    driver.get("https://orionstars.vip:8781/")
+                except Exception as e:
+                    # If the error message is not found, it means login was successful, so break out of the loop
+                    break
+
+            # Switch to iframe
+            print("Switching to iframe")
+            wait.until(EC.frame_to_be_available_and_switch_to_it((By.ID, "frm_main_content")))
+            print("Searching for user")
+            try:
+                usersearch_elem = wait.until(
+                    EC.element_to_be_clickable((By.XPATH, "//input[@placeholder='ID,Account or NickName']")))
+                usersearch_elem.send_keys(userid)
+
+                search_btn = wait.until(EC.presence_of_element_located((By.XPATH,
+                                                                        "//a[contains(@class, 'btn13') and contains(@class, 'btn-danger1') and contains(text(), 'Search')]")))
+                search_btn.click()
+
+                update_btn_xpath = "//a[@style='padding:6px; display: inline-block; text-align: center;font-family: sans-serif; cursor: pointer; background-color: #007dce; color: white; font-size: 14px; border-radius: 8px;height:16px;width:48px' and starts-with(@onclick, 'updateSelect')]"
+                update_btn = wait.until(EC.presence_of_element_located((By.XPATH, update_btn_xpath)))
+                update_btn.click()
+
+                recharge_btn = wait.until(EC.presence_of_element_located((By.XPATH,
+                                                                          "//a[contains(@class, 'btn12') and contains(@class, 'btn-danger') and contains(text(), 'Recharge')]")))
+                recharge_btn.click()
+            except:
+                msg = "User Not Found"
+            driver.switch_to.default_content()
+
+            # Switch to the new iframe using its `src` attribute
+            iframe_xpath = "//iframe[contains(@src, 'https://orionstars.vip:8781/Module/AccountManager/GrantTreasure.aspx?param=')]"
+            # driver.switch_to.frame(driver.find_element(By.XPATH, iframe_xpath))
+            wait.until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, iframe_xpath)))
+
+            # Now, locate and interact with the desired element inside the iframe
+            gold_elem = wait.until(EC.presence_of_element_located((By.ID, "txtAddGold")))
+            gold_elem.send_keys(amount)
+
+            recharge_btn = wait.until(EC.presence_of_element_located((By.ID, "Button1")))
+            recharge_btn.click()
+            status = True
+        except Exception as e:
+            logging.exception(e)
+            if msg == "":
+                msg = "Internal Server Error"
+
+        finally:
+            close_and_quit_driver(driver)
+            tries -= 1
+            if status:
+                return status, msg
+            if msg == "Internal Server Error" and tries < 1:
+                return status, msg

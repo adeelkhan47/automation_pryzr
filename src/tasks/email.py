@@ -3,7 +3,7 @@ import math
 
 from common.enums import EmailStatus, Platforms
 from helpers.common import get_emails
-from helpers.platform import taichi, kirin, vblink, orionstar
+from helpers.platform import taichi, kirin, vblink, orionstar, acebook
 from model import Email
 from model.user import User
 from model.user_emails import UserEmail
@@ -165,6 +165,39 @@ def process_new(self, *args, **kwargs):
                                     # logging.info(f"{second_last} ---- ${amount}")
                                     # platform_response, msg = vblink("test000111", int(amount), creds[0], creds[1])
                                     platform_response, msg = vblink(second_last, int(amount), creds[0], creds[1])
+                                    # platform_response, msg = taichi("test123", 1, creds[0], creds[1])
+                                    if platform_response == True:
+                                        game_status = EmailStatus.Successful.value
+                                    else:
+                                        reason = msg
+                                new_email = Email(
+                                    email_id=email["email_id"],
+                                    subject=email["subject"],
+                                    sender_email=email["sender"],
+                                    sender_name=email["sender_name"],
+                                    status=game_status,
+                                    reason=reason,
+                                    platform=platform
+                                )
+                            elif subject_platform.lower() == "ab" or "ace" in subject_platform.lower() or "djwae" in subject_platform.lower():
+
+                                platform = Platforms.Acebook.value
+                                user_platforms = each.platforms
+                                game_status = EmailStatus.Failed.value
+                                creds = None
+                                for each_user_platforms in user_platforms:
+                                    if each_user_platforms.platform.name == Platforms.Acebook.value:
+                                        creds = (
+                                            each_user_platforms.platform.username,
+                                            each_user_platforms.platform.password)
+                                if amount and not creds:
+                                    reason = "Creds not Set for Platform. "
+                                elif not amount:
+                                    reason = "Amount not Found."
+                                else:
+                                    # logging.info(f"{second_last} ---- ${amount}")
+
+                                    platform_response, msg = acebook(second_last, int(amount), creds[0], creds[1])
                                     # platform_response, msg = taichi("test123", 1, creds[0], creds[1])
                                     if platform_response == True:
                                         game_status = EmailStatus.Successful.value

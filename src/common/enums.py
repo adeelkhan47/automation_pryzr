@@ -26,5 +26,6 @@ class EmailStatus(Enum):
 class Platforms(Enum):
     Taichi = "Taichi"
     VBLink = "VBlink"
-    Firekirin = "Firekirin",
+    Firekirin = "Firekirin"
+    Acebook = "Acebook"
     Orionstar = "Orionstar"
