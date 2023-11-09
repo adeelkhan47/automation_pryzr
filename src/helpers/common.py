@@ -2,6 +2,7 @@ import json
 import logging
 import re
 
+from deathbycaptcha import deathbycaptcha
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 
@@ -42,3 +43,33 @@ def get_emails(user_auth, count=5):
     except Exception as e:
         logging.exception(e)
         return None
+
+
+def extract_using_GBC(path):
+    username = "adeelkhan47"
+    password = "Adeelk47!"
+
+    # Initialize the client with your credentials
+    client = deathbycaptcha.SocketClient(username, password)
+    try:
+        # Get your current balance
+        # balance = client.get_balance()
+        # print(f"Current Balance: {balance}")
+
+        # Send the CAPTCHA for solving
+        captcha = client.decode(path, timeout=60)  # Increased timeout for better chance of accurate solution
+        if captcha:
+            # The CAPTCHA was solved
+            print(f"CAPTCHA {captcha['captcha']} solved: {captcha['text']}")
+            return captcha['text']
+        else:
+            print("CAPTCHA was not solved")
+            return "0000"
+
+    except deathbycaptcha.AccessDeniedException as e:
+        print(f"Access denied: {e}")
+        return "0000"
+    except deathbycaptcha.Error as e:
+        # Handle any other errors that might occur
+        print(f"An error occurred: {e}")
+        return "0000"

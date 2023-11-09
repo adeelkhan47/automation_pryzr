@@ -29,3 +29,5 @@ class Platforms(Enum):
     Firekirin = "Firekirin"
     Acebook = "Acebook"
     Orionstar = "Orionstar"
+    GameVault999 = "GameVault999"
+
