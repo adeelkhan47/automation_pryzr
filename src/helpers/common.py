@@ -117,10 +117,11 @@ def extract_text_from_image(image_path):
 
 def get_mac_chrome_driver():
     options = ChromeOptions()
-    options.add_argument("--headless")
+    #options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    path_to_driver = ChromeDriverManager().install()
+    driver = webdriver.Chrome(options=options)
     return driver
 
 
