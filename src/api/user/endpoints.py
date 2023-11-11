@@ -13,7 +13,7 @@ from common.enums import EmailStatus
 from config import settings
 from helpers.deps import Auth
 from helpers.jwt import create_access_token
-from platform_scripts.juwa import run_script
+from platform_scripts.gamevault import run_script
 from model import Email, UserEmail
 from model.user import User
 
