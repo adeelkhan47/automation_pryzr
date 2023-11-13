@@ -2,9 +2,17 @@ import json
 import logging
 import re
 
+import pytesseract
+import undetected_chromedriver as uc
+from PIL import Image
 from deathbycaptcha import deathbycaptcha
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options as ChromeOptions
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.firefox.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 
 
 def get_emails(user_auth, count=5):
@@ -73,3 +81,55 @@ def extract_using_GBC(path):
         # Handle any other errors that might occur
         print(f"An error occurred: {e}")
         return "0000"
+
+
+def close_and_quit_driver(driver):
+    try:
+        driver.close()
+    except Exception as e:
+        print("Error while closing the browser:", e)
+
+    try:
+        driver.quit()
+    except Exception as e:
+        print("Error while quitting the driver:", e)
+
+
+def extract_text_from_image(image_path):
+    """
+    Extract text from an image using Tesseract OCR.
+
+    Args:
+    - image_path (str): path to the image from which text needs to be extracted
+
+    Returns:
+    - str: extracted text from the image
+    """
+    image = Image.open(image_path)
+    text = pytesseract.image_to_string(image, config='outputbase digits')
+    numeric_text = ''.join(re.findall(r'\d', text))
+
+    if not numeric_text:
+        return 0000
+
+    return numeric_text
+
+
+def get_mac_chrome_driver():
+    options = ChromeOptions()
+    #options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    path_to_driver = ChromeDriverManager().install()
+    driver = webdriver.Chrome(options=options)
+    return driver
+
+
+def get_ubuntu_chrome_driver() -> object:
+    options = uc.ChromeOptions()
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.binary_location = '/usr/bin/google-chrome-stable'
+    driver = uc.Chrome(options=options)
+    return driver

@@ -13,8 +13,7 @@ from common.enums import EmailStatus
 from config import settings
 from helpers.deps import Auth
 from helpers.jwt import create_access_token
-from helpers.platform import taichi, vblink, kirin, orionstar,acebook,gamevault999
-
+from platform_scripts.gamevault import run_script
 from model import Email, UserEmail
 from model.user import User
 
@@ -105,7 +104,7 @@ def process_emails(request: Request):
     # emails = juwa("_test000111",1,"KingsofvaJW","Vite837")
 
     #emails = kirin("Test000_", 1, "fiverr333", "fiverr333")
-    emails = gamevault999("test000111", 1, "KingsofvaGV", "Life726")
+    emails = run_script("test000111", 1, "KingsofvaGV", "Life726")
     print(emails)
     #emails = acebook("test000111", 1, "CashierHA", "Cash616")
     return {"Data": emails}

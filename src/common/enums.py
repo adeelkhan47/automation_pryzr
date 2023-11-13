@@ -30,4 +30,5 @@ class Platforms(Enum):
     Acebook = "Acebook"
     Orionstar = "Orionstar"
     GameVault999 = "GameVault999"
+    Juwa = "Juwa"
 
