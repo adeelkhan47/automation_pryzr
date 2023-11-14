@@ -14,7 +14,7 @@ def run_script(userid, amount, username, password):
     # driver = get_mac_chrome_driver()
     tries = 5
     driver = get_ubuntu_chrome_driver()
-    wait = WebDriverWait(driver, 2)
+    wait = WebDriverWait(driver, 5)
     status = False
     msg = ""
     try:
@@ -80,7 +80,7 @@ def run_script(userid, amount, username, password):
         iframe_xpath = "//iframe[contains(@src, 'https://firekirin.xyz:8888/Module/AccountManager/GrantTreasure.aspx?param=')]"
         # driver.switch_to.frame(driver.find_element(By.XPATH, iframe_xpath))
         wait.until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, iframe_xpath)))
-
+        ##
         # Now, locate and interact with the desired element inside the iframe
         gold_elem = wait.until(EC.presence_of_element_located((By.ID, "txtAddGold")))
         gold_elem.send_keys(amount)
