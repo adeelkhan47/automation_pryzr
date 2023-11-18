@@ -4,3 +4,4 @@ from .email import Email
 from .user_emails import UserEmail
 from .platform import Platform
 from .user_platforms import UserPlatform
+from .user_accounts import UserAccount

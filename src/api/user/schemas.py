@@ -1,26 +1,37 @@
+from typing import List
+
 from pydantic import BaseModel
 
 
-class SubscriptionBase(BaseModel):
-    name: str
-    price: float
-    description: str = None
-
-
-class SubscriptionCreate(SubscriptionBase):
-    pass
-
-
-class SubscriptionUpdate(SubscriptionBase):
-    pass
-
-
-class SubscriptionInDBBase(SubscriptionBase):
+# class TempUser(BaseModel):
+#     id: int
+#     status: bool
+#     is_primary: bool
+#     authorised: bool
+#     email: str
+#     unique_id: str
+#     class Config:
+#         orm_mode = True
+class UserBase(BaseModel):
     id: int
-
+    status: bool
+    is_primary: bool
+    authorised: bool
+    email: str
+    primary_email: str
+    unique_id: str
     class Config:
         orm_mode = True
 
 
-class Subscription(SubscriptionInDBBase):
-    pass
+class UserAccounts(BaseModel):
+    primary_user: UserBase
+    secondary_user: UserBase
+    class Config:
+        orm_mode = True
+
+class GetUser(UserBase):
+    user_accounts: List[UserAccounts]
+
+    class Config:
+        orm_mode = True
