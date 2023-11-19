@@ -25,7 +25,7 @@ class UserBase(BaseModel):
 
 
 class UserAccounts(BaseModel):
-    primary_user: UserBase
+    #primary_user: UserBase
     secondary_user: UserBase
     class Config:
         orm_mode = True

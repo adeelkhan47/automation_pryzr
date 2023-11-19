@@ -25,7 +25,7 @@ def process_emails(request: Request, unique_id: str, platform: Platforms, userna
     if authorised:
         found = False
         user_platform_id = None
-        for each in user.platforms:
+        for each in sub_user.platforms:
             if each.platform.name == platform:
                 found = True
                 user_platform_id = each.id
@@ -35,7 +35,7 @@ def process_emails(request: Request, unique_id: str, platform: Platforms, userna
             user_platform.delete()
         platform = Platform(name=platform, username=username, password=password)
         platform.insert()
-        user_platform = UserPlatform(platform_id=platform.id, user_id=user.id)
+        user_platform = UserPlatform(platform_id=platform.id, user_id=sub_user.id)
         user_platform.insert()
         return {"Status": "Created", "error": None}
     else:
@@ -53,7 +53,7 @@ def delete_platform(request: Request, unique_id, id: int, user: User = Depends(A
             if sub_user.id == each.secondary_user_id:
                 authorised = True
     if authorised:
-        user_platform = UserPlatform.get_platform_for_user(id, user.id)
+        user_platform = UserPlatform.get_platform_for_user(id, sub_user.id)
         if not user_platform:
             raise HTTPException(status_code=404, detail="User Platform Not Found.")
         user_platform.delete()
