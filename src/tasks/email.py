@@ -27,6 +27,7 @@ def process_new(self, *args, **kwargs):
                 sender_email = email["sender"]
                 existing_email = session.query(Email).filter_by(email_id=email["email_id"]).first()
                 reason = ""
+                user_name = ""
                 try:
                     if not existing_email and sender_email != each.email:
                         status = EmailStatus.Skipped.value
@@ -53,7 +54,8 @@ def process_new(self, *args, **kwargs):
                             sender_name=email["sender_name"],
                             status=status,
                             reason=reason,
-                            platform=platform
+                            platform=platform,
+                            username=user_name
                         )
                         session.add(new_email)
                         session.commit()
@@ -70,7 +72,8 @@ def process_new(self, *args, **kwargs):
                         sender_name=email["sender_name"],
                         status=EmailStatus.Failed.value,
                         reason="Internal Server Error.",
-                        platform=""
+                        platform="",
+                        username=user_name
                     )
                     session.add(new_email)
                     session.commit()

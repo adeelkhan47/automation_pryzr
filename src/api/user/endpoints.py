@@ -56,22 +56,25 @@ def login(request: Request):
 
 
 @router.get("/secondary_login")
-# def secondary_login(request: Request, email: str, user: User = Depends(Auth())):
-def secondary_login(request: Request, email: str):
-    my_user = User.get_by_email("mmadikhan1998@gmail.com")
-
+def secondary_login(request: Request, email: str, main_user_unique_id: str):
+    # def secondary_login(request: Request, email: str):
+    main_user = User.get_by_unique_id(main_user_unique_id)
+    if not main_user:
+        raise HTTPException(status_code=403, detail="Unauthorized.")
     unique_id = uuid.uuid4().hex
     if User.get_by_email(email):
         raise HTTPException(status_code=405, detail="Already Exist.")
-    user = User(email=email, user_auth={}, status=True, is_primary=False, authorised=False, primary_email=my_user.email,
-                unique_id=str(unique_id))
-    user.insert()
+
     flow = get_google_oauth2_flow()
     authorization_url, state = flow.authorization_url(
         access_type='offline',
         approval_prompt='force',
         include_granted_scopes='true'
     )
+    user = User(email=email, user_auth={}, status=True, is_primary=False, authorised=False,
+                primary_email=main_user.email,
+                unique_id=str(unique_id))
+    user.insert()
     return RedirectResponse(authorization_url)
 
 
@@ -165,11 +168,12 @@ def user_info(request: Request, unique_id: str, user: User = Depends(Auth())):
     raise HTTPException(status_code=403, detail="Unauthorized.")
 
 
-# @router.get("/new_emails")
-# def process_emails(request: Request):
-#     taichi("kelso919", 1)
-#     return {"Data": "emails"}
-
+@router.get("/email_verification")
+def email_verification(request: Request, email: str, user: User = Depends(Auth())):
+    if User.get_by_email(email):
+        raise HTTPException(status_code=405, detail="Already Exist.")
+    else:
+        return "ok"
 
 @router.get("/emails")
 def process_emails(request: Request, unique_id: str, user: User = Depends(Auth()), status: EmailStatus = "",
@@ -242,6 +246,9 @@ def set_primary_user(request: Request, unique_id: str, user: User = Depends(Auth
 def delete_sub_user(request: Request, unique_id: str, user: User = Depends(Auth())):
     authorised = False
     sub_user = User.get_by_unique_id(unique_id)
+
+    if not sub_user:
+        raise HTTPException(status_code=404, detail="Sub User Not Found.")
     if sub_user.id == user.id:
         raise HTTPException(status_code=405, detail="Not Allowed.")
     else:
@@ -256,7 +263,7 @@ def delete_sub_user(request: Request, unique_id: str, user: User = Depends(Auth(
 
 
 @router.get("/update_status")
-def update_status(request: Request, status: bool, unique_id: str,user: User = Depends(Auth())):
+def update_status(request: Request, status: bool, unique_id: str, user: User = Depends(Auth())):
     authorised = False
     sub_user = User.get_by_unique_id(unique_id)
     if sub_user.id == user.id:
@@ -270,4 +277,3 @@ def update_status(request: Request, status: bool, unique_id: str,user: User = De
         return "ok"
     else:
         raise HTTPException(status_code=403, detail="Unauthorized.")
-
