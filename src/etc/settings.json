@@ -5,7 +5,7 @@
   "database_uri": "postgresql://postgres:postgres@localhost:5432/test_autom8",
   "CLIENT_ID": "541897888013-l65co7aigf95et2ku1gblnseoagk1qm6.apps.googleusercontent.com",
   "CLIENT_SECRET": "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",
-  "REDIRECT_URI": "http://localhost:8000/user/login/callback",
+  "REDIRECT_URI": "http://localhost:8080/callback",
   "SCOPES": [
     "openid",
     "https://www.googleapis.com/auth/gmail.readonly",
