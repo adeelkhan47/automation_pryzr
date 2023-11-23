@@ -11,13 +11,20 @@ broker_transport_options = {"visibility_timeout": 3600 * 6}
 result_backend = settings.CELERY_BROKER_REDIS
 result_persistent = False
 
-imports = ("tasks.email")
+imports = ("tasks.email","tasks.account")
+
 
 beat_schedule = {
     "account_processed": {
         "task": "tasks.email.process_new",
         "schedule": timedelta(minutes=1)
+    },
+    "unauthorized_account_processed": {
+        "task": "tasks.account.process_unauthorized_accounts",
+        "schedule": timedelta(minutes=3)
     }
 }
+
+
 
 

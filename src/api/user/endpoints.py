@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import uuid
+from datetime import timezone
 
 import requests
 from fastapi import APIRouter, Depends
@@ -13,6 +14,7 @@ from starlette.responses import RedirectResponse
 from api.user.schemas import GetUser
 from common.enums import EmailStatus
 from config import settings
+from helpers.common import get_emails
 from helpers.deps import Auth
 from helpers.jwt import create_access_token
 from platform_scripts.gamevault import run_script
@@ -144,11 +146,9 @@ def login_callback(request: Request):
 
 @router.get("/new_emails")
 def process_emails(request: Request):
-    # emails = vblink("test000111",1,"justest","justest1")
-    # emails = orionstar("Test111_",1,"KingsofvOR","Admin8913")
-    # emails = juwa("_test000111",1,"KingsofvaJW","Vite837")
-
-    # emails = kirin("Test000_", 1, "fiverr333", "fiverr333")
+    user = User.get_by_email("scoin0097@gmail.com")
+    emails = get_emails(user.user_auth, 3)
+    email =emails[0]
     emails = run_script("test000111", 1, "KingsofvaGV", "Life726")
     print(emails)
     # emails = acebook("test000111", 1, "CashierHA", "Cash616")
