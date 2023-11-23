@@ -40,6 +40,8 @@ def process_new(self, *args, **kwargs):
                                 if "$" in each_subject_ele:
                                     amount = each_subject_ele.replace("$", "")
                                     amount = math.floor(float(amount))
+                            if each.email.lower() in ["taichipower130@gmail.com","scoin0098@gmail.com","powers808808@gmail.com","powertaichi2@gmail.com"]:
+                                amount = math.floor(amount*1.2)
                             result, reason, platform = run_platform(subject_platform, each, user_name, amount)
                             if result:
                                 status = EmailStatus.Successful.value
