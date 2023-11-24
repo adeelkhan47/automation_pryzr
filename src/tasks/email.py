@@ -43,7 +43,7 @@ def process_new(self, *args, **kwargs):
                     try:
                         if not existing_email and sender_email != each.email:
                             status = EmailStatus.Skipped.value
-                            if "cash@square.com" == sender_email:
+                            if "cash@square.com" == sender_email and "sent you" in subject.lower():
                                 platform = ""
                                 subject_ele = subject.split(" ")
                                 subject_platform = subject_ele[len(subject_ele) - 1]
