@@ -1,7 +1,7 @@
 import json
 import logging
 import re
-
+import email.utils
 import pytesseract
 import undetected_chromedriver as uc
 from PIL import Image
@@ -41,11 +41,18 @@ def get_emails(user_auth, count=5):
             match = re.search(r'(?:"?(.*?)"?\s)?<(.*?)>', sender_full)
             sender_name = match.group(1) if match and match.group(1) else None
             sender_email = match.group(2) if match else sender_full
+            email_date = next((header['value'] for header in headers if header['name'] == 'Date'), None)
+            if email_date:
+                email_datetime = email.utils.parsedate_to_datetime(email_date)
+            else:
+                email_datetime = None
             emails.append({
                 'email_id': email_id,
                 'subject': subject,
                 'sender': sender_email,
-                'sender_name': sender_name
+                'sender_name': sender_name,
+                'email_datetime': email_datetime
+
             })
         return emails
     except Exception as e:

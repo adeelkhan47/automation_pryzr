@@ -1,4 +1,5 @@
 import logging
+from datetime import timezone
 
 import math
 
@@ -23,61 +24,73 @@ def process_new(self, *args, **kwargs):
             logging.info(f"{each.email}")
             emails = get_emails(each.user_auth, 20)
             for email in emails:
-                subject = email["subject"]
-                sender_email = email["sender"]
-                existing_email = session.query(Email).filter_by(email_id=email["email_id"]).first()
-                reason = ""
-                try:
-                    if not existing_email and sender_email != each.email:
-                        status = EmailStatus.Skipped.value
-                        if "cash@square.com" == sender_email:
-                            platform = ""
-                            subject_ele = subject.split(" ")
-                            subject_platform = subject_ele[len(subject_ele) - 1]
-                            user_name = subject_ele[len(subject_ele) - 2]
-                            amount = None
-                            for each_subject_ele in subject_ele:
-                                if "$" in each_subject_ele:
-                                    amount = each_subject_ele.replace("$", "")
-                                    amount = math.floor(float(amount))
-                            # if each.email.lower() in ["taichipower130@gmail.com","scoin0098@gmail.com","powers808808@gmail.com","powertaichi2@gmail.com"]:
-                            #     amount = math.floor(amount*1.2)
-                            result, reason, platform = run_platform(subject_platform, each, user_name, amount)
-                            if result:
-                                status = EmailStatus.Successful.value
-                        else:
-                            reason = "Not Related to CashApp"
+
+                if email['email_datetime'].tzinfo:
+                    email_datetime_naive = email['email_datetime'].astimezone(timezone.utc).replace(tzinfo=None)
+                else:
+                    email_datetime_naive = email['email_datetime']
+                if each.created_at.tzinfo:
+                    user_created_at_naive = each.created_at.astimezone(timezone.utc).replace(tzinfo=None)
+                else:
+                    user_created_at_naive = each.created_at
+                # Now you can compare
+                if email_datetime_naive > user_created_at_naive:
+                    subject = email["subject"]
+                    sender_email = email["sender"]
+                    existing_email = session.query(Email).filter_by(email_id=email["email_id"]).first()
+                    reason = ""
+                    user_name = ""
+                    try:
+                        if not existing_email and sender_email != each.email:
                             status = EmailStatus.Skipped.value
+                            if "cash@square.com" == sender_email and "sent you" in subject.lower():
+                                platform = ""
+                                subject_ele = subject.split(" ")
+                                subject_platform = subject_ele[len(subject_ele) - 1]
+                                user_name = subject_ele[len(subject_ele) - 2]
+                                amount = None
+                                for each_subject_ele in subject_ele:
+                                    if "$" in each_subject_ele:
+                                        amount = each_subject_ele.replace("$", "")
+                                        amount = math.floor(float(amount))
+                                result, reason, platform = run_platform(subject_platform, each, user_name, amount)
+                                if result:
+                                    status = EmailStatus.Successful.value
+                            else:
+                                reason = "Not Related to CashApp"
+                                status = EmailStatus.Skipped.value
+                            new_email = Email(
+                                email_id=email["email_id"],
+                                subject=email["subject"],
+                                sender_email=email["sender"],
+                                sender_name=email["sender_name"],
+                                status=status,
+                                reason=reason,
+                                platform=platform,
+                                username=user_name
+                            )
+                            session.add(new_email)
+                            session.commit()
+                            user_email = UserEmail(user_id=each.id, email_id=new_email.id)
+                            session.add(user_email)
+                            session.commit()
+                            logging.error(f"{each.email} Success.")
+                    except Exception as e:
+                        logging.exception(e)
                         new_email = Email(
                             email_id=email["email_id"],
                             subject=email["subject"],
                             sender_email=email["sender"],
                             sender_name=email["sender_name"],
-                            status=status,
-                            reason=reason,
-                            platform=platform
+                            status=EmailStatus.Failed.value,
+                            reason="Internal Server Error.",
+                            platform="",
+                            username=user_name
                         )
                         session.add(new_email)
                         session.commit()
                         user_email = UserEmail(user_id=each.id, email_id=new_email.id)
                         session.add(user_email)
                         session.commit()
-                        logging.error(f"{each.email} Success.")
-                except Exception as e:
-                    logging.exception(e)
-                    new_email = Email(
-                        email_id=email["email_id"],
-                        subject=email["subject"],
-                        sender_email=email["sender"],
-                        sender_name=email["sender_name"],
-                        status=EmailStatus.Failed.value,
-                        reason="Internal Server Error.",
-                        platform=""
-                    )
-                    session.add(new_email)
-                    session.commit()
-                    user_email = UserEmail(user_id=each.id, email_id=new_email.id)
-                    session.add(user_email)
-                    session.commit()
         except Exception as e:
             logging.error(f"{each.email} Failed.")
