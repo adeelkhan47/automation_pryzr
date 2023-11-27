@@ -64,7 +64,7 @@ def secondary_login(request: Request, email: str, main_user_unique_id: str):
     if not main_user:
         raise HTTPException(status_code=403, detail="Unauthorized.")
     unique_id = uuid.uuid4().hex
-    if User.get_by_email(email):
+    if User.get_by_email(email.lower()):
         raise HTTPException(status_code=405, detail="Already Exist.")
 
     flow = get_google_oauth2_flow()
@@ -73,7 +73,7 @@ def secondary_login(request: Request, email: str, main_user_unique_id: str):
         approval_prompt='force',
         include_granted_scopes='true'
     )
-    user = User(email=email, user_auth={}, status=True, is_primary=False, authorised=False,
+    user = User(email=email.lower(), user_auth={}, status=True, is_primary=False, authorised=False,
                 primary_email=main_user.email,
                 unique_id=str(unique_id))
     user.insert()
@@ -107,6 +107,7 @@ def login_callback(request: Request):
     # request.session["credentials"] = creds_data
 
     if user_email:
+        user_email = user_email.lower()
         print(user_email)
         user = User.get_by_email(user_email)
         if user:
