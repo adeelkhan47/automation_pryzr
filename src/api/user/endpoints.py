@@ -17,8 +17,9 @@ from config import settings
 from helpers.common import get_emails
 from helpers.deps import Auth
 from helpers.jwt import create_access_token
+from model.account import Account
 from platform_scripts.gamevault import run_script
-from model import Email, UserEmail, UserAccount
+from model import Email, UserEmail, AccountUser
 from model.user import User
 
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
@@ -46,22 +47,49 @@ def get_user(request: Request, user: User = Depends(Auth())):
     raise HTTPException(status_code=404, detail="Not Found")
 
 
+@router.get("/signup")
+def login(name, email, username, password, phone_number, request: Request):
+    unique_id = uuid.uuid4().hex
+    if Account.get_by_email(email):
+        raise HTTPException(status_code=405, detail="Email Already Exist.")
+    if Account.get_by_username(username):
+        raise HTTPException(status_code=405, detail="Username Already Exist.")
+    account = Account(name=name, email=email, username=username, status=True, phone_number=phone_number,
+                      password=password, unique_id=unique_id)
+    account.insert()
+    access, refresh = create_access_token(account.id)
+    token = {
+        "full_name": account.name,
+        "access_token": access,
+        "refresh_token": refresh,
+        "email": account.email
+    }
+    return token
+
+
 @router.get("/login")
-def login(request: Request):
-    flow = get_google_oauth2_flow()
-    authorization_url, state = flow.authorization_url(
-        access_type='offline',
-        approval_prompt='force',
-        include_granted_scopes='true'
-    )
-    return RedirectResponse(authorization_url)
+def login(email_or_username, password, request: Request):
+    account = Account.get_by_email_pass(email_or_username, password)
+    if not account:
+        account = Account.get_by_username_pass(email_or_username, password)
+        if not account:
+            raise HTTPException(status_code=404, detail="Not Found.")
+
+    access, refresh = create_access_token(account.id)
+    token = {
+        "full_name": account.name,
+        "access_token": access,
+        "refresh_token": refresh,
+        "email": account.email
+    }
+    return token
 
 
 @router.get("/secondary_login")
-def secondary_login(request: Request, email: str, main_user_unique_id: str):
+def secondary_login(request: Request, email: str, account_unique_id: str):
     # def secondary_login(request: Request, email: str):
-    main_user = User.get_by_unique_id(main_user_unique_id)
-    if not main_user:
+    account = Account.get_by_unique_id(account_unique_id)
+    if not account:
         raise HTTPException(status_code=403, detail="Unauthorized.")
     unique_id = uuid.uuid4().hex
     if User.get_by_email(email.lower()):
@@ -73,10 +101,11 @@ def secondary_login(request: Request, email: str, main_user_unique_id: str):
         approval_prompt='force',
         include_granted_scopes='true'
     )
-    user = User(email=email.lower(), user_auth={}, status=True, is_primary=False, authorised=False,
-                primary_email=main_user.email,
+    user = User(email=email.lower(), user_auth={}, status=True, authorised=False,
                 unique_id=str(unique_id))
     user.insert()
+    account_user = AccountUser(user_id=user.id, account_id=account.id)
+    account_user.insert()
     return RedirectResponse(authorization_url)
 
 
@@ -108,39 +137,24 @@ def login_callback(request: Request):
 
     if user_email:
         user_email = user_email.lower()
-        print(user_email)
         user = User.get_by_email(user_email)
-        if user:
-            user.update(id=user.id, to_update={"user_auth": json.dumps(creds_data)})
-        else:
-            unique_id = uuid.uuid4().hex
-            user = User(
-                email=user_email,
-                user_auth=json.dumps(creds_data),
-                status=True,
-                is_primary=True,
-                authorised=True,
-                primary_email=user_email,
-                unique_id=str(unique_id)
+        if user.accounts:
+            account = user.accounts[0].account
+            if user:
+                user.update(id=user.id, to_update={"user_auth": json.dumps(creds_data), "authorised": True})
+            else:
+                raise HTTPException(status_code=405, detail="Not Allowed.")
 
-            )
-            user.insert()
-        if not user.is_primary and user.authorised:
+            access, refresh = create_access_token(account.id)
+            token = {
+                "full_name": account.name,
+                "access_token": access,
+                "refresh_token": refresh,
+                "email": account.email
+            }
+            return token
+        else:
             raise HTTPException(status_code=405, detail="Not Allowed.")
-        if not user.is_primary and not user.authorised:
-            user.update(id=user.id, to_update={"authorised": True})
-            primary_user = User.get_by_email(user.primary_email)
-            user_account = UserAccount(primary_user_id=primary_user.id, secondary_user_id=user.id)
-            user_account.insert()
-            return "authorised"
-        access, refresh = create_access_token(user.id)
-        token = {
-            "full_name": user_full_name,
-            "access_token": access,
-            "refresh_token": refresh,
-            "email": user.email
-        }
-        return token
     else:
         raise HTTPException(status_code=500, detail="Internal Server Error.")
 
@@ -149,7 +163,7 @@ def login_callback(request: Request):
 def process_emails(request: Request):
     user = User.get_by_email("scoin0097@gmail.com")
     emails = get_emails(user.user_auth, 3)
-    email =emails[0]
+    email = emails[0]
     emails = run_script("test000111", 1, "KingsofvaGV", "Life726")
     print(emails)
     # emails = acebook("test000111", 1, "CashierHA", "Cash616")
@@ -157,124 +171,109 @@ def process_emails(request: Request):
 
 
 @router.get("/platforms")
-def user_info(request: Request, unique_id: str, user: User = Depends(Auth())):
-    sub_user = User.get_by_unique_id(unique_id)
-    if sub_user.id == user.id:
-        data = [each.platform for each in user.platforms]
-        return {"Data": data}
-    for each in user.user_accounts:
-        if sub_user.id == each.secondary_user_id:
-            data = [each.platform for each in sub_user.platforms]
+def user_info(request: Request, unique_id: str, account: Account = Depends(Auth())):
+    user = User.get_by_unique_id(unique_id)
+    for each in user.accounts:
+        if account.id == each.account_id:
+            data = [each.platform for each in user.platforms]
             return {"Data": data}
     raise HTTPException(status_code=403, detail="Unauthorized.")
 
 
 @router.get("/email_verification")
-def email_verification(request: Request, email: str, user: User = Depends(Auth())):
+def email_verification(request: Request, email: str, account: Account = Depends(Auth())):
     if User.get_by_email(email):
         raise HTTPException(status_code=405, detail="Already Exist.")
     else:
         return "ok"
 
+
 @router.get("/emails")
-def process_emails(request: Request, unique_id: str, user: User = Depends(Auth()), status: EmailStatus = "",
+def process_emails(request: Request, unique_id: str, account: Account = Depends(Auth()), status: EmailStatus = "",
                    start: int = 1,
                    limit: int = 20,
                    order_by: str = ""):
     authorised = False
-    sub_user = User.get_by_unique_id(unique_id)
-    if sub_user.id == user.id:
-        authorised = True
-    else:
-        for each in user.user_accounts:
-            if sub_user.id == each.secondary_user_id:
-                authorised = True
+    user = User.get_by_unique_id(unique_id)
+    for each in user.accounts:
+        if account.id == each.account_id:
+            authorised = True
     if authorised:
         args = dict(request.query_params)
         if "status" in args.keys():
             args["status:eq"] = args["status"]
             del args["status"]
-        # if user is not None:
-        #     args["user_id:eq"] = user.id
-
         query = db.session.query(Email)
 
         # If user_id is provided, join with UserEmail to filter by user_id
         if user is not None:
-            query = query.join(UserEmail).filter(UserEmail.user_id == sub_user.id)
+            query = query.join(UserEmail).filter(UserEmail.user_id == user.id)
         emails, count = Email.filter_and_order(args, query)
         return {"data": emails, "total_rows": count, "error": None}
     else:
         raise HTTPException(status_code=403, detail="Unauthorized.")
 
 
-@router.get("/set_primary")
-def set_primary_user(request: Request, unique_id: str, user: User = Depends(Auth())):
-    new_accounts = []
-    new_accounts.append(user.id)
-
-    authorised = False
-    sub_user = User.get_by_unique_id(unique_id)
-    if sub_user.id == user.id:
-        authorised = True
-    else:
-        for each in user.user_accounts:
-            if sub_user.id == each.secondary_user_id:
-                authorised = True
-            else:
-                new_accounts.append(each.secondary_user_id)
-    if authorised:
-
-        User.update(id=user.id, to_update={"is_primary": False, "primary_email": sub_user.email})
-        User.update(id=sub_user.id, to_update={"is_primary": True, "primary_email": sub_user.email})
-
-        UserAccount.delete_all_by_primary_user(user.id)
-        for each in new_accounts:
-            user_account = UserAccount(primary_user_id=sub_user.id, secondary_user_id=each)
-            user_account.insert()
-        access, refresh = create_access_token(sub_user.id)
-        token = {
-            "access_token": access,
-            "refresh_token": refresh,
-            "email": user.email
-        }
-        return token
-    else:
-        raise HTTPException(status_code=403, detail="Unauthorized.")
-
+# @router.get("/set_primary")
+# def set_primary_user(request: Request, unique_id: str, user: User = Depends(Auth())):
+#     new_accounts = []
+#     new_accounts.append(user.id)
+#
+#     authorised = False
+#     sub_user = User.get_by_unique_id(unique_id)
+#     if sub_user.id == user.id:
+#         authorised = True
+#     else:
+#         for each in user.user_accounts:
+#             if sub_user.id == each.secondary_user_id:
+#                 authorised = True
+#             else:
+#                 new_accounts.append(each.secondary_user_id)
+#     if authorised:
+#
+#         User.update(id=user.id, to_update={"is_primary": False, "primary_email": sub_user.email})
+#         User.update(id=sub_user.id, to_update={"is_primary": True, "primary_email": sub_user.email})
+#
+#         UserAccount.delete_all_by_primary_user(user.id)
+#         for each in new_accounts:
+#             user_account = UserAccount(primary_user_id=sub_user.id, secondary_user_id=each)
+#             user_account.insert()
+#         access, refresh = create_access_token(sub_user.id)
+#         token = {
+#             "access_token": access,
+#             "refresh_token": refresh,
+#             "email": user.email
+#         }
+#         return token
+#     else:
+#         raise HTTPException(status_code=403, detail="Unauthorized.")
 
 @router.get("/delete_sub_user")
-def delete_sub_user(request: Request, unique_id: str, user: User = Depends(Auth())):
+def delete_sub_user(request: Request, unique_id: str, account: Account = Depends(Auth())):
     authorised = False
-    sub_user = User.get_by_unique_id(unique_id)
+    user = User.get_by_unique_id(unique_id)
 
-    if not sub_user:
+    if not user:
         raise HTTPException(status_code=404, detail="Sub User Not Found.")
-    if sub_user.id == user.id:
-        raise HTTPException(status_code=405, detail="Not Allowed.")
-    else:
-        for each in user.user_accounts:
-            if sub_user.id == each.secondary_user_id:
-                authorised = True
+    for each in user.accounts:
+        if account.id == each.account_id:
+            authorised = True
     if authorised:
-        UserAccount.delete_all_by_secondary_user_id(sub_user.id)
-        sub_user.delete()
+        AccountUser.delete_all_by_user_id(user.id)
+        user.delete()
     else:
         raise HTTPException(status_code=403, detail="Unauthorized.")
 
 
 @router.get("/update_status")
-def update_status(request: Request, status: bool, unique_id: str, user: User = Depends(Auth())):
+def update_status(request: Request, status: bool, unique_id: str, account: Account = Depends(Auth())):
     authorised = False
-    sub_user = User.get_by_unique_id(unique_id)
-    if sub_user.id == user.id:
-        authorised = True
-    else:
-        for each in user.user_accounts:
-            if sub_user.id == each.secondary_user_id:
-                authorised = True
+    user = User.get_by_unique_id(unique_id)
+    for each in user.accounts:
+        if account.id == each.account_id:
+            authorised = True
     if authorised:
-        User.update(id=sub_user.id, to_update={"status": status})
+        User.update(id=user.id, to_update={"status": status})
         return "ok"
     else:
         raise HTTPException(status_code=403, detail="Unauthorized.")

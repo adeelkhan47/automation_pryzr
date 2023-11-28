@@ -2,6 +2,7 @@ from fastapi import Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from helpers.jwt import decode_token
 from helpers.response import error
+from model.account import Account
 from model.user import User
 
 
@@ -16,11 +17,11 @@ class Auth(HTTPBearer):
         if credentials:
             if not credentials.scheme == "Bearer":
                 raise error("Invalid authentication scheme.", code=403)
-            user_id, message = decode_token(credentials.credentials)
-            if user_id is None:
+            account_id, message = decode_token(credentials.credentials)
+            if account_id is None:
                 raise error(message, code=401)
-            user = User.get_by_id(user_id)
-            if not user:
+            account = Account.get_by_id(account_id)
+            if not account:
                 raise error("User not found", code=401)
-            return user
+            return account
         raise error("Invalid authorization code.", code=401)
