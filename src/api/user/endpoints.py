@@ -11,7 +11,7 @@ from fastapi_sqlalchemy import db
 from google_auth_oauthlib.flow import Flow
 from starlette.responses import RedirectResponse
 
-from api.user.schemas import GetUser
+from api.user.schemas import GetUser, SignupRequest, GetAccount
 from common.enums import EmailStatus
 from config import settings
 from helpers.common import get_emails
@@ -40,24 +40,31 @@ def get_google_oauth2_flow() -> Flow:
     return flow
 
 
-@router.get("/get_user", response_model=GetUser)
-def get_user(request: Request, user: User = Depends(Auth())):
-    if user:
-        return user
+@router.get("/get_user", response_model=GetAccount)
+def get_user(request: Request, account: Account = Depends(Auth())):
+    if account:
+        return account
     raise HTTPException(status_code=404, detail="Not Found")
 
 
-@router.get("/signup")
-def login(name, email, username, password, phone_number, request: Request):
+@router.post("/signup")
+def signup(request_body: SignupRequest, request: Request):
     unique_id = uuid.uuid4().hex
-    if Account.get_by_email(email):
-        raise HTTPException(status_code=405, detail="Email Already Exist.")
-    if Account.get_by_username(username):
-        raise HTTPException(status_code=405, detail="Username Already Exist.")
-    account = Account(name=name, email=email, username=username, status=True, phone_number=phone_number,
-                      password=password, unique_id=unique_id)
+    if Account.get_by_email(request_body.email):
+        raise HTTPException(status_code=405, detail="Email Already Exists.")
+    if Account.get_by_username(request_body.username):
+        raise HTTPException(status_code=405, detail="Username Already Exists.")
+
+    # Create the account
+    account = Account(name=request_body.name, email=request_body.email, username=request_body.username,
+                      status=True, phone_number=request_body.phone_number,
+                      password=request_body.password, unique_id=unique_id)
     account.insert()
     access, refresh = create_access_token(account.id)
+
+
+
+    # Prepare the response token
     token = {
         "full_name": account.name,
         "access_token": access,
@@ -65,7 +72,6 @@ def login(name, email, username, password, phone_number, request: Request):
         "email": account.email
     }
     return token
-
 
 @router.get("/login")
 def login(email_or_username, password, request: Request):

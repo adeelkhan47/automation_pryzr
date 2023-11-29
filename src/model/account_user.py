@@ -9,8 +9,7 @@ from .base import Base
 class AccountUser(Base):
     __tablename__ = "account_user"
 
-
-    account_id = Column(Integer, ForeignKey("user.id"))
+    account_id = Column(Integer, ForeignKey("account.id"))
     user_id = Column(Integer, ForeignKey("user.id"))
 
     user = relationship("User", back_populates="accounts")
