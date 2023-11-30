@@ -10,23 +10,10 @@ class User(Base):
     email = Column(String, index=True, nullable=False, unique=True)
     user_auth = Column(JSON, nullable=True)
     status = Column(Boolean, default=True)
-    is_primary = Column(Boolean, default=False)
     authorised = Column(Boolean, default=False)
-    primary_email = Column(String, index=True)
     unique_id = Column(String, index=True)
-    # primary_user = relationship("UserAccount", back_populates="user")
-    # secondary_user = relationship("UserAccount", back_populates="user")
-    user_accounts = relationship(
-        "UserAccount",
-        primaryjoin="User.id == UserAccount.primary_user_id",
-        back_populates="primary_user"
-    )
 
-    # secondary_user = relationship(
-    #     "UserAccount",
-    #     primaryjoin="User.id == UserAccount.secondary_user_id",
-    #     back_populates="secondary_user"
-    # )
+    accounts = relationship("AccountUser", back_populates="user")
     emails = relationship("UserEmail", back_populates="user")
     platforms = relationship("UserPlatform", back_populates="user")
 
