@@ -55,10 +55,13 @@ def process_new(self, *args, **kwargs):
                                     if "$" in each_subject_ele:
                                         amount = each_subject_ele.replace("$", "")
                                         amount = math.floor(float(amount))
-                                        amount_store = str(amount)
+                                        amount_store = f"{amount}$"
                                 result, reason, platform = run_platform(subject_platform, each, user_name, amount)
                                 if result:
                                     status = EmailStatus.Successful.value
+                                else:
+                                    amount_store = ""
+                                    user_name = ""
                             else:
                                 reason = "Not Related to CashApp"
                                 status = EmailStatus.Skipped.value
