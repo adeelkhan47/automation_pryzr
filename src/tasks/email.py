@@ -40,6 +40,7 @@ def process_new(self, *args, **kwargs):
                     existing_email = session.query(Email).filter_by(email_id=email["email_id"]).first()
                     reason = ""
                     user_name = ""
+                    amount_store = ""
                     try:
                         if not existing_email and sender_email != each.email:
                             status = EmailStatus.Skipped.value
@@ -49,11 +50,12 @@ def process_new(self, *args, **kwargs):
                                 subject_ele = subject.split(" ")
                                 subject_platform = subject_ele[len(subject_ele) - 1]
                                 user_name = subject_ele[len(subject_ele) - 2]
-                                amount = None
+
                                 for each_subject_ele in subject_ele:
                                     if "$" in each_subject_ele:
                                         amount = each_subject_ele.replace("$", "")
                                         amount = math.floor(float(amount))
+                                        amount_store = str(amount)
                                 result, reason, platform = run_platform(subject_platform, each, user_name, amount)
                                 if result:
                                     status = EmailStatus.Successful.value
@@ -68,7 +70,8 @@ def process_new(self, *args, **kwargs):
                                 status=status,
                                 reason=reason,
                                 platform=platform,
-                                username=user_name
+                                username=user_name,
+                                amount=amount_store
                             )
                             session.add(new_email)
                             session.commit()
@@ -86,7 +89,8 @@ def process_new(self, *args, **kwargs):
                             status=EmailStatus.Failed.value,
                             reason="Internal Server Error.",
                             platform="",
-                            username=user_name
+                            username=user_name,
+                            amount=amount_store
                         )
                         session.add(new_email)
                         session.commit()
