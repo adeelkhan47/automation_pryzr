@@ -35,3 +35,20 @@ def process_unauthorized_accounts(self, *args, **kwargs):
                 session.commit()
         except Exception as e:
             logging.error(f"Account -> {user.email} Failed.")
+
+
+@celery_app.task(bind=True, base=DbTask)
+def process_old_emails(self, *args, **kwargs):
+    session = self.session
+    current_time = datetime.now()
+
+    # Subtract 5 days from the current time
+    five_days_ago = current_time - timedelta(days=5)
+
+    # Query to get emails older than 5 days directly
+    emails_to_delete = session.query(Email).filter(Email.created_at < five_days_ago).all()
+
+    # Deleting the fetched emails
+    for email in emails_to_delete:
+        session.delete(email)
+    session.commit()

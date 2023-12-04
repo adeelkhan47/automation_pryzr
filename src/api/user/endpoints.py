@@ -18,7 +18,7 @@ from helpers.common import get_emails
 from helpers.deps import Auth
 from helpers.jwt import create_access_token
 from model.account import Account
-from platform_scripts.gamevault import run_script
+from platform_scripts.bluedragon import run_script
 from model import Email, UserEmail, AccountUser
 from model.user import User
 
@@ -62,8 +62,6 @@ def signup(request_body: SignupRequest, request: Request):
     account.insert()
     access, refresh = create_access_token(account.id)
 
-
-
     # Prepare the response token
     token = {
         "full_name": account.name,
@@ -72,6 +70,7 @@ def signup(request_body: SignupRequest, request: Request):
         "email": account.email
     }
     return token
+
 
 @router.get("/login")
 def login(email_or_username, password, request: Request):
@@ -167,10 +166,10 @@ def login_callback(request: Request):
 
 @router.get("/new_emails")
 def process_emails(request: Request):
-    user = User.get_by_email("scoin0097@gmail.com")
-    emails = get_emails(user.user_auth, 3)
-    email = emails[0]
-    emails = run_script("test000111", 1, "KingsofvaGV", "Life726")
+    # user = User.get_by_email("scoin0097@gmail.com")
+    # emails = get_emails(user.user_auth, 3)
+    # email = emails[0]
+    emails = run_script("test000222", 1, "Autom8test", "Bd12345")
     print(emails)
     # emails = acebook("test000111", 1, "CashierHA", "Cash616")
     return {"Data": emails}
@@ -219,40 +218,6 @@ def process_emails(request: Request, unique_id: str, account: Account = Depends(
     else:
         raise HTTPException(status_code=403, detail="Unauthorized.")
 
-
-# @router.get("/set_primary")
-# def set_primary_user(request: Request, unique_id: str, user: User = Depends(Auth())):
-#     new_accounts = []
-#     new_accounts.append(user.id)
-#
-#     authorised = False
-#     sub_user = User.get_by_unique_id(unique_id)
-#     if sub_user.id == user.id:
-#         authorised = True
-#     else:
-#         for each in user.user_accounts:
-#             if sub_user.id == each.secondary_user_id:
-#                 authorised = True
-#             else:
-#                 new_accounts.append(each.secondary_user_id)
-#     if authorised:
-#
-#         User.update(id=user.id, to_update={"is_primary": False, "primary_email": sub_user.email})
-#         User.update(id=sub_user.id, to_update={"is_primary": True, "primary_email": sub_user.email})
-#
-#         UserAccount.delete_all_by_primary_user(user.id)
-#         for each in new_accounts:
-#             user_account = UserAccount(primary_user_id=sub_user.id, secondary_user_id=each)
-#             user_account.insert()
-#         access, refresh = create_access_token(sub_user.id)
-#         token = {
-#             "access_token": access,
-#             "refresh_token": refresh,
-#             "email": user.email
-#         }
-#         return token
-#     else:
-#         raise HTTPException(status_code=403, detail="Unauthorized.")
 
 @router.get("/delete_sub_user")
 def delete_sub_user(request: Request, unique_id: str, account: Account = Depends(Auth())):

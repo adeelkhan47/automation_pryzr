@@ -31,4 +31,5 @@ class Platforms(Enum):
     Orionstar = "Orionstar"
     GameVault999 = "GameVault999"
     Juwa = "Juwa"
+    BlueDragon = "BlueDragon"
 

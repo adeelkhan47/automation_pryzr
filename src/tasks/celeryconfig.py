@@ -21,7 +21,11 @@ beat_schedule = {
     },
     "unauthorized_account_processed": {
         "task": "tasks.account.process_unauthorized_accounts",
-        "schedule": timedelta(minutes=3)
+        "schedule": timedelta(minutes=5)
+    },
+    "delete_old_emails": {
+        "task": "tasks.account.process_old_emails",
+        "schedule": timedelta(hours=10)
     }
 }
 
