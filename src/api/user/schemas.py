@@ -1,4 +1,4 @@
-from typing import List
+from typing import List,Optional
 
 from pydantic import BaseModel
 
@@ -41,6 +41,7 @@ class Account(BaseModel):
     password: str
     phone_number: str
     unique_id : str
+    is_email_authorised : Optional[bool]
 class UserAccounts(BaseModel):
     #primary_user: UserBase
     user: UserBase
