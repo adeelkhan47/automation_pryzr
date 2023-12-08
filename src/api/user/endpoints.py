@@ -18,7 +18,7 @@ from helpers.common import get_emails
 from helpers.deps import Auth
 from helpers.jwt import create_access_token
 from model.account import Account
-from platform_scripts.bluedragon import run_script
+from platform_scripts.goldenDragon import run_script
 from model import Email, UserEmail, AccountUser
 from model.user import User
 from helpers.email_service import send_email
@@ -202,7 +202,7 @@ def process_emails(request: Request):
     # user = User.get_by_email("scoin0097@gmail.com")
     # emails = get_emails(user.user_auth, 3)
     # email = emails[0]
-    emails = run_script("test000222", 1, "Autom8test", "Bd12345")
+    emails = run_script("5999326", 1, "boss", "Brandon99","3806020")
     print(emails)
     # emails = acebook("test000111", 1, "CashierHA", "Cash616")
     return {"Data": emails}

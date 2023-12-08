@@ -10,6 +10,7 @@ class Platform(Base):
     name = Column(String, index=True, nullable=False)
     username = Column(String, nullable=False)
     password = Column(String, nullable=False)
+    url_key = Column(String, nullable=True,default="")
     users = relationship("UserPlatform", back_populates="platform")
 
     @classmethod

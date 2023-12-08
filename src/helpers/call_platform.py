@@ -7,6 +7,7 @@ from platform_scripts.gamevault import run_script as gamevault_script
 from platform_scripts.orionstar import run_script as orion_script
 from platform_scripts.juwa import run_script as juwa_script
 from platform_scripts.bluedragon import run_script as bluedragon_script
+from platform_scripts.goldenDragon import run_script as goldendragon_script
 
 
 def run_platform(subject_platform, each, username, amount):
@@ -26,6 +27,8 @@ def run_platform(subject_platform, each, username, amount):
         platform = Platforms.Juwa.value
     elif subject_platform.lower() == "bd" or subject_platform.lower() == "bluedragon":
         platform = Platforms.BlueDragon.value
+    elif subject_platform.lower() == "gd" or subject_platform.lower() == "goldendragon":
+        platform = Platforms.GoldenDragon.value
     else:
         return False, "Platfrom Not Identified", ""
     user_platforms = each.platforms
@@ -34,7 +37,9 @@ def run_platform(subject_platform, each, username, amount):
         if each_user_platforms.platform.name == platform:
             creds = (
                 each_user_platforms.platform.username,
-                each_user_platforms.platform.password)
+                each_user_platforms.platform.password,
+                each_user_platforms.platform.url_key,
+            )
     if amount and not creds:
         return False, "Creds not Set for Platform. ", platform
     elif not amount:
@@ -63,4 +68,7 @@ def run_platform(subject_platform, each, username, amount):
             return res, msg, platform
         if platform == Platforms.BlueDragon.value:
             res, msg = bluedragon_script(username, int(amount), creds[0], creds[1])
+            return res, msg, platform
+        if platform == Platforms.GoldenDragon.value:
+            res, msg = goldendragon_script(username, int(amount), creds[0], creds[1],creds[2])
             return res, msg, platform
