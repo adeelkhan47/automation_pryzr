@@ -7,6 +7,8 @@ from datetime import timezone, datetime, timedelta
 import requests
 from fastapi import APIRouter, Depends
 from fastapi import Request, HTTPException
+
+
 from fastapi_sqlalchemy import db
 from google_auth_oauthlib.flow import Flow
 from starlette.responses import RedirectResponse
@@ -120,7 +122,7 @@ def confirm_email(unique_id: str):
     if time_difference > timedelta(days=7):
         raise HTTPException(status_code=404, detail="Expired Found.")
     Account.update(account.id, {"is_email_authorised": True})
-    return "ok"
+    return RedirectResponse(f"{settings.FE_url}/signin")
 
 
 @router.get("/secondary_login")
