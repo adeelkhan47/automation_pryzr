@@ -122,7 +122,7 @@ def confirm_email(unique_id: str):
     if time_difference > timedelta(days=7):
         raise HTTPException(status_code=404, detail="Expired Found.")
     Account.update(account.id, {"is_email_authorised": True})
-    return RedirectResponse(f"{settings.FE_url}/signin")
+    return RedirectResponse(f"{settings.FE_URL}/signin")
 
 
 @router.get("/secondary_login")
@@ -204,7 +204,7 @@ def process_emails(request: Request):
     # user = User.get_by_email("scoin0097@gmail.com")
     # emails = get_emails(user.user_auth, 3)
     # email = emails[0]
-    emails = run_script("5999326", 1, "boss", "Brandon99","3806020")
+    emails = run_script("5999326", 3, "boss", "Brandon99","3806020")
     print(emails)
     # emails = acebook("test000111", 1, "CashierHA", "Cash616")
     return {"Data": emails}

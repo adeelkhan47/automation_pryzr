@@ -14,8 +14,8 @@ def run_script(userid, amount, username, password,url_key):
 
     tries = 3
     while tries >= 1:
-        driver = get_mac_chrome_driver()
-        #driver = get_ubuntu_chrome_driver()
+        #driver = get_mac_chrome_driver()
+        driver = get_ubuntu_chrome_driver()
         wait = WebDriverWait(driver, 5)
         status = False
         msg = ""
@@ -46,26 +46,26 @@ def run_script(userid, amount, username, password,url_key):
                 time.sleep(1)
                 driver.get("https://pos.goldendragoncity.com/CustomerAccount/")
 
-                select = wait.until(EC.presence_of_element_located((By.ID, 'search_type'))).click()
+                select = wait.until(EC.presence_of_element_located((By.XPATH, "//option[@value='pin_id']"))).click()
 
                 search = wait.until(EC.presence_of_element_located((By.ID, "searchPin")))
                 search.send_keys(userid)
-                ok_button = wait.until(EC.presence_of_element_located((By.ID, "ok_button")))
+                ok_button = wait.until(EC.presence_of_element_located((By.ID, "btn_search")))
                 ok_button.click()
                 purchase = wait.until(EC.presence_of_element_located((By.XPATH, "/html/body/div[2]/div[4]/div/div[1]/div/div[2]/div/div[2]/button[2]")))
                 purchase.click()
                 try:
-                    temp_button = wait.until(EC.presence_of_element_located((By.XPATH, "/html/body/div[5]/div[7]/div/button")))
-                    temp_button.click()
+                    wait.until(EC.frame_to_be_available_and_switch_to_it(
+                        (By.XPATH, "//iframe[starts-with(@id, 'fancybox-frame')]")))
+                    for i in range(int(amount)):
+                        wait.until(EC.presence_of_element_located((By.XPATH, "/html/body/div/form/div/ul/li[5]/div[2]/button[1]"))).click()
+                    wait.until(EC.presence_of_element_located((By.ID, "saveBtn"))).click()
+                    status = True
+
                 except:
                     print("-")
-                add_amount = wait.until(EC.presence_of_element_located((By.ID, "txt_scoreNum")))
-                add_amount.send_keys(amount)
-                add_amountsubmit = wait.until(EC.presence_of_element_located((By.ID, "Button_OK")))
-                add_amountsubmit.click()
-                status = True
             except:
-                msg = "User Not Found"
+                msg = "internal server error"
 
         except Exception as e:
             logging.exception(e)

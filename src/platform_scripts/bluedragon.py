@@ -14,8 +14,8 @@ def run_script(userid, amount, username, password):
 
     tries = 3
     while tries >= 1:
-        driver = get_mac_chrome_driver()
-        #driver = get_ubuntu_chrome_driver()
+        #driver = get_mac_chrome_driver()
+        driver = get_ubuntu_chrome_driver()
         wait = WebDriverWait(driver, 5)
         status = False
         msg = ""
