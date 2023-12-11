@@ -32,4 +32,5 @@ class Platforms(Enum):
     GameVault999 = "GameVault999"
     Juwa = "Juwa"
     BlueDragon = "BlueDragon"
+    GoldenDragon = "GoldenDragon"
 

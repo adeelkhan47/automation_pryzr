@@ -14,6 +14,7 @@ class Account(Base):
     name = Column(String, nullable=False)
     password = Column(String, nullable=False)
     unique_id = Column(String, index=True)
+    is_email_authorised = Column(Boolean, default=False)
     users = relationship("AccountUser", back_populates="account")
 
     @classmethod

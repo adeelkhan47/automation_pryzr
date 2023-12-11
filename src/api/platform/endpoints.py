@@ -11,6 +11,7 @@ router = APIRouter()
 
 @router.post("/create")
 def process_emails(request: Request, unique_id: str, platform: Platforms, username: str, password: str,
+                   url_key: str = "",
                    account: Account = Depends(Auth())):
     if not account:
         raise HTTPException(status_code=400, detail="User Not Found.")
@@ -31,7 +32,7 @@ def process_emails(request: Request, unique_id: str, platform: Platforms, userna
         if found:
             user_platform = UserPlatform.get_by_id(user_platform_id)
             user_platform.delete()
-        platform = Platform(name=platform, username=username, password=password)
+        platform = Platform(name=platform, username=username, password=password, url_key=url_key)
         platform.insert()
         user_platform = UserPlatform(platform_id=platform.id, user_id=user.id)
         user_platform.insert()

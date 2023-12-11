@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" style="margin: 0; padding: 0;">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style type="text/css">
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            font-family: Avenir, sans-serif;
+            background-color: #F1F8FF;
+        }
+
+        .header {
+            background-color: #125988;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            color: #FFFFFF;
+            font-size: 24px;
+        }
+
+        .content {
+            padding: 20px;
+            background-color: #FFFFFF;
+            color: #000000;
+            font-size: 16px;
+            line-height: 24px;
+            text-align: center;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            margin-top: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            line-height: 24px;
+            text-align: center;
+            text-decoration: none !important;
+            transition: opacity 0.1s ease-in;
+            color: #FFFFFF !important;
+            background-color: #FFB500;
+            border-radius: 0;
+        }
+
+        .footer {
+            padding: 20px;
+            background-color: #125988;
+            text-align: center;
+            font-size: 12px;
+            color: #FFFFFF;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Autom8</h1>
+        </div>
+
+        <div class="content">
+            <p>
+                Hi {{fullName}},
+            </p>
+            <p>
+                This is an email sent to you to confirm linking <b>{{email}}</b> to your Autom8 account.
+            </p>
+            <p>
+                Click on the following button to add this email address to your account:
+            </p>
+            <div style="text-align: center;">
+                <a class="button" href="{{settings.BASE_URL}}/user/confirm_email?unique_id={{unique_id}}">Confirm</a>
+            </div>
+        </div>
+
+        <div class="footer">
+            © 2023 Autom8. All rights reserved.
+        </div>
+    </div>
+</body>
+</html>

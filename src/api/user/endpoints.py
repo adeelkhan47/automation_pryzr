@@ -2,11 +2,13 @@ import json
 import logging
 import os
 import uuid
-from datetime import timezone
+from datetime import timezone, datetime, timedelta
 
 import requests
 from fastapi import APIRouter, Depends
 from fastapi import Request, HTTPException
+
+
 from fastapi_sqlalchemy import db
 from google_auth_oauthlib.flow import Flow
 from starlette.responses import RedirectResponse
@@ -18,9 +20,13 @@ from helpers.common import get_emails
 from helpers.deps import Auth
 from helpers.jwt import create_access_token
 from model.account import Account
-from platform_scripts.bluedragon import run_script
+from platform_scripts.goldenDragon import run_script
 from model import Email, UserEmail, AccountUser
 from model.user import User
+from helpers.email_service import send_email
+from helpers.hash import create_hash, is_correct
+from helpers.jwt import create_access_token, get_expiry_time
+from helpers.response import jinja2_env
 
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 router = APIRouter()
@@ -58,10 +64,10 @@ def signup(request_body: SignupRequest, request: Request):
     # Create the account
     account = Account(name=request_body.name, email=request_body.email, username=request_body.username,
                       status=True, phone_number=request_body.phone_number,
-                      password=request_body.password, unique_id=unique_id)
-    account.insert()
-    access, refresh = create_access_token(account.id)
+                      password=request_body.password, unique_id=unique_id, is_email_authorised=False)
 
+    access, refresh = create_access_token(account.id)
+    print(account.name)
     # Prepare the response token
     token = {
         "full_name": account.name,
@@ -69,6 +75,17 @@ def signup(request_body: SignupRequest, request: Request):
         "refresh_token": refresh,
         "email": account.email
     }
+    template = jinja2_env.get_template("email_confirmation.html")
+    send_email(
+        account.email,
+        "Autom8 Email Verification.",
+        template.render(
+            fullName=account.name,
+            settings=settings,
+            unique_id=account.unique_id,
+        ),
+    )
+    account.insert()
     return token
 
 
@@ -88,6 +105,24 @@ def login(email_or_username, password, request: Request):
         "email": account.email
     }
     return token
+
+
+@router.get("/confirm_email")
+def confirm_email(unique_id: str):
+    account = Account.get_by_unique_id(unique_id)
+    if not account:
+        raise HTTPException(status_code=404, detail="Not Found.")
+
+    current_time = datetime.now(account.created_at.tzinfo)
+    time_difference = current_time - account.created_at
+    # Calculating the difference
+    time_difference = current_time - account.created_at
+
+    # Checking if the difference is greater than 15 minutes
+    if time_difference > timedelta(days=7):
+        raise HTTPException(status_code=404, detail="Expired Found.")
+    Account.update(account.id, {"is_email_authorised": True})
+    return RedirectResponse(f"{settings.FE_URL}/signin")
 
 
 @router.get("/secondary_login")
@@ -169,7 +204,7 @@ def process_emails(request: Request):
     # user = User.get_by_email("scoin0097@gmail.com")
     # emails = get_emails(user.user_auth, 3)
     # email = emails[0]
-    emails = run_script("test000222", 1, "Autom8test", "Bd12345")
+    emails = run_script("5999326", 3, "boss", "Brandon99","3806020")
     print(emails)
     # emails = acebook("test000111", 1, "CashierHA", "Cash616")
     return {"Data": emails}
