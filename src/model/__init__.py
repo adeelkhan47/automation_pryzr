@@ -3,6 +3,6 @@ from .user import User
 from .email import Email
 from .user_emails import UserEmail
 from .platform import Platform
-from .user_platforms import UserPlatform
+from .account_platforms import AccountPlatform
 from .account_user import AccountUser
 from .account import Account

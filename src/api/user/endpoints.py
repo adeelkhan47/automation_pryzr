@@ -211,14 +211,10 @@ def process_emails(request: Request):
 
 
 @router.get("/platforms")
-def user_info(request: Request, unique_id: str, account: Account = Depends(Auth())):
-    user = User.get_by_unique_id(unique_id)
-    for each in user.accounts:
-        if account.id == each.account_id:
-            data = [each.platform for each in user.platforms]
-            return {"Data": data}
-    raise HTTPException(status_code=403, detail="Unauthorized.")
+def user_info(request: Request, account: Account = Depends(Auth())):
 
+    data = [each.platform for each in account.platforms]
+    return {"Data": data}
 
 @router.get("/email_verification")
 def email_verification(request: Request, email: str, account: Account = Depends(Auth())):
