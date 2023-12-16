@@ -212,7 +212,6 @@ def process_emails(request: Request):
 
 @router.get("/platforms")
 def user_info(request: Request, account: Account = Depends(Auth())):
-
     data = [each.platform for each in account.platforms]
     return {"Data": data}
 
