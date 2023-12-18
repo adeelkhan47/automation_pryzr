@@ -24,5 +24,6 @@
   "mail_port": 465,
   "mail_username": "munja.noreply@gmail.com",
   "mail_app_password": "txwnwyqkunsqsjug",
-  "mail_password": "Nelsonmunja"
+  "mail_password": "Nelsonmunja",
+  "admin_secret_key": "abc"
 }
