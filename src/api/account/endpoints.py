@@ -11,29 +11,30 @@ from model import Email, User
 from model.account import Account
 from model.account_user import AccountUser
 from model.user_emails import UserEmail
-from datetime import datetime,timedelta
+from datetime import datetime, timedelta
 from typing import Optional
 
 router = APIRouter()
 
 
 @router.post("/get_accounts", response_model=GetAccounts)
-def get_accounts(request: Request,found: bool = Depends(Admin_Auth())):
-    accounts, count = Account.filter_and_order({})
+def get_accounts(request: Request, found: bool = Depends(Admin_Auth())):
+    accounts, count = Account.filter_and_order({"start": 1, "limit": 200})
     data = {"accounts": accounts, "count": count}
     return data
 
 
 @router.get("/get_agents_stats")
 def get_accounts(request: Request, account_unique_key: str, start_date: Optional[str] = None,
-                 end_date: Optional[str] = None,found: bool = Depends(Admin_Auth())):
-    args = {}
+                 end_date: Optional[str] = None, found: bool = Depends(Admin_Auth())):
+    args = {{"start": 1, "limit": 200}}
+
     if start_date and end_date:
         start_date = datetime.strptime(start_date, '%Y-%m-%d')
         end_date = datetime.strptime(end_date, '%Y-%m-%d')
         end_date = end_date + timedelta(days=1, minutes=-1)
 
-        args = {"created_at:gte": start_date, "created_at:lte": end_date}
+        args = {"start": 1, "limit": 200,"created_at:gte": start_date, "created_at:lte": end_date}
 
     account = Account.get_by_unique_id(account_unique_key)
     if not account:
@@ -53,8 +54,9 @@ def get_accounts(request: Request, account_unique_key: str, start_date: Optional
             inner_data[platform.value] = 0
         for email in emails:
             inner_data[email.platform] += int(email.amount)
-        data.append({each.user.email:inner_data})
+        data.append({each.user.email: inner_data})
     return data
+
 
 @router.get("/admin_secret")
 def admin_secret(secret_key, request: Request):
@@ -66,4 +68,3 @@ def admin_secret(secret_key, request: Request):
         return token
     else:
         raise HTTPException(status_code=403, detail="Unauthorized.")
-
