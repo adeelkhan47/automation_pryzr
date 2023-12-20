@@ -53,7 +53,8 @@ def get_accounts(request: Request, account_unique_key: str, start_date: Optional
         for platform in Platforms:
             inner_data[platform.value] = 0
         for email in emails:
-            inner_data[email.platform] += int(email.amount)
+            if "$" in email.amount and len(email.amount)>=2:
+                inner_data[email.platform] += int(email.amount[:-1])
         data.append({each.user.email: inner_data})
     return data
 
