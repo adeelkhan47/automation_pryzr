@@ -27,7 +27,7 @@ def get_accounts(request: Request, found: bool = Depends(Admin_Auth())):
 @router.get("/get_agents_stats")
 def get_accounts(request: Request, account_unique_key: str, start_date: Optional[str] = None,
                  end_date: Optional[str] = None, found: bool = Depends(Admin_Auth())):
-    args = {{"start": 1, "limit": 200}}
+    args = {"start": 1, "limit": 200}
 
     if start_date and end_date:
         start_date = datetime.strptime(start_date, '%Y-%m-%d')
