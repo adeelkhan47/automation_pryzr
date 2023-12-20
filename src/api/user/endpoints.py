@@ -2,31 +2,26 @@ import json
 import logging
 import os
 import uuid
-from datetime import timezone, datetime, timedelta
+from datetime import datetime, timedelta
 
 import requests
 from fastapi import APIRouter, Depends
 from fastapi import Request, HTTPException
-
-
 from fastapi_sqlalchemy import db
 from google_auth_oauthlib.flow import Flow
 from starlette.responses import RedirectResponse
 
-from api.user.schemas import GetUser, SignupRequest, GetAccount
+from api.user.schemas import SignupRequest, GetAccount
 from common.enums import EmailStatus
 from config import settings
 from helpers.common import get_emails
 from helpers.deps import Auth
-from helpers.jwt import create_access_token
-from model.account import Account
-from platform_scripts.goldenDragon import run_script
-from model import Email, UserEmail, AccountUser
-from model.user import User
 from helpers.email_service import send_email
-from helpers.hash import create_hash, is_correct
-from helpers.jwt import create_access_token, get_expiry_time
+from helpers.jwt import create_access_token
 from helpers.response import jinja2_env
+from model import Email, UserEmail, AccountUser
+from model.account import Account
+from model.user import User
 
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 router = APIRouter()
@@ -66,9 +61,7 @@ def signup(request_body: SignupRequest, request: Request):
                       status=True, phone_number=request_body.phone_number,
                       password=request_body.password, unique_id=unique_id, is_email_authorised=False)
 
-    access, refresh = create_access_token(account.id)
-    print(account.name)
-    # Prepare the response token
+    access, refresh = create_access_token(account.id)    # Prepare the response token
     token = {
         "full_name": account.name,
         "access_token": access,
@@ -204,10 +197,17 @@ def process_emails(request: Request):
     # user = User.get_by_email("scoin0097@gmail.com")
     # emails = get_emails(user.user_auth, 3)
     # email = emails[0]
-    emails = run_script("5999326", 3, "boss", "Brandon99","3806020")
-    print(emails)
-    # emails = acebook("test000111", 1, "CashierHA", "Cash616")
-    return {"Data": emails}
+    # emails = run_script("5999326", 3, "boss", "Brandon99","3806020")
+    # print(emails)
+    # # emails = acebook("test000111", 1, "CashierHA", "Cash616")
+    session = db.session
+    accounts = session.query(Account).all()
+    for account in accounts:
+        account_user = [temp.user for temp in account.users]
+        for each in account_user:
+            logging.info(f"{each.email}")
+            emails = get_emails(each.user_auth, 20)
+    return {"Data": []}
 
 
 @router.get("/platforms")
