@@ -29,9 +29,7 @@ def run_script(userid, amount, username, password):
         submit_btn = wait.until(EC.presence_of_element_located((By.ID, "btnLogin")))
         submit_btn.click()
         try:
-            print("Switching to iframe")
             wait.until(EC.frame_to_be_available_and_switch_to_it((By.ID, "frm_main_content")))
-            print("Searching for user")
             usersearch_elem = wait.until(
                 EC.element_to_be_clickable((By.XPATH, "//input[@placeholder='ID,Account or Name']")))
             usersearch_elem.send_keys(userid)
