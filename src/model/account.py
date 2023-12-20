@@ -16,6 +16,7 @@ class Account(Base):
     unique_id = Column(String, index=True)
     is_email_authorised = Column(Boolean, default=False)
     users = relationship("AccountUser", back_populates="account")
+    platforms = relationship("AccountPlatform", back_populates="account")
 
     @classmethod
     def get_by_email(cls, email: str):

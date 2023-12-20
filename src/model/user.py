@@ -15,8 +15,6 @@ class User(Base):
 
     accounts = relationship("AccountUser", back_populates="user")
     emails = relationship("UserEmail", back_populates="user")
-    platforms = relationship("UserPlatform", back_populates="user")
-
     @classmethod
     def get_by_email(cls, email: str):
         row = db.session.query(cls).filter_by(email=email).first()

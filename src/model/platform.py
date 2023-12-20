@@ -11,7 +11,7 @@ class Platform(Base):
     username = Column(String, nullable=False)
     password = Column(String, nullable=False)
     url_key = Column(String, nullable=True,default="")
-    users = relationship("UserPlatform", back_populates="platform")
+    accounts = relationship("AccountPlatform", back_populates="platform")
 
     @classmethod
     def get_by_name(cls, name: str):
