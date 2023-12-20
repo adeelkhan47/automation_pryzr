@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime, timedelta
 from datetime import timezone
 
 import math
@@ -58,7 +59,8 @@ def process_new(self, *args, **kwargs):
                                             amount = each_subject_ele.replace("$", "")
                                             amount = math.floor(float(amount))
                                             amount_store = f"{amount}$"
-                                    result, reason, platform = run_platform(subject_platform, account, user_name, amount)
+                                    result, reason, platform = run_platform(subject_platform, account, user_name,
+                                                                            amount)
                                     if result:
                                         status = EmailStatus.Successful.value
                                     else:
@@ -104,3 +106,41 @@ def process_new(self, *args, **kwargs):
                             session.commit()
             except Exception as e:
                 logging.error(f"Account : {account.email} and Email : {each.email} Failed.")
+
+
+# logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__file__)
+
+
+@celery_app.task(bind=True, base=DbTask)
+def process_unauthorized_accounts(self, *args, **kwargs):
+    session = self.session
+    users = session.query(User).filter_by(authorised=False).all()
+
+    for user in users:
+        try:
+            current_time = datetime.now(user.created_at.tzinfo)
+            # Calculating the difference
+            time_difference = current_time - user.created_at
+            # Checking if the difference is greater than 15 minutes
+            if time_difference > timedelta(minutes=10):
+                session.query(User).filter_by(id=user.id).first().delete()
+                session.commit()
+        except Exception as e:
+            logging.error(f"Account -> {user.email} Failed.")
+
+# @celery_app.task(bind=True, base=DbTask)
+# def process_old_emails(self, *args, **kwargs):
+#     session = self.session
+#     current_time = datetime.now()
+#
+#     # Subtract 5 days from the current time
+#     five_days_ago = current_time - timedelta(days=5)
+#
+#     # Query to get emails older than 5 days directly
+#     emails_to_delete = session.query(Email).filter(Email.created_at < five_days_ago).all()
+#
+#     # Deleting the fetched emails
+#     for email in emails_to_delete:
+#         session.delete(email)
+#     session.commit()
