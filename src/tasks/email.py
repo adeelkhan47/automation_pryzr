@@ -20,6 +20,8 @@ logger = logging.getLogger(__file__)
 def process_new(self, *args, **kwargs):
     session = self.session
     accounts = session.query(Account).all()
+    bonus_accounts = ["taitim484@gmail.com","powertaichi2@gmail.com"]
+    bonus_amount = 1.2
     for account in accounts:
         account_user = [temp.user for temp in account.users]
         for each in account_user:
@@ -53,12 +55,15 @@ def process_new(self, *args, **kwargs):
                                     subject_ele = subject.split(" ")
                                     subject_platform = subject_ele[len(subject_ele) - 1]
                                     user_name = subject_ele[len(subject_ele) - 2]
-
+                                    amount = "0"
                                     for each_subject_ele in subject_ele:
                                         if "$" in each_subject_ele:
                                             amount = each_subject_ele.replace("$", "")
                                             amount = math.floor(float(amount))
                                             amount_store = f"{amount}$"
+                                            if account.email.lower() in bonus_accounts:
+                                                amount = int(amount) * bonus_amount
+                                                amount = math.floor(float(amount))
                                     result, reason, platform = run_platform(subject_platform, account, user_name,
                                                                             amount)
                                     if result:
