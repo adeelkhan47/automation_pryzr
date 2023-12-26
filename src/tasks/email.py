@@ -21,7 +21,7 @@ def process_new(self, *args, **kwargs):
     session = self.session
     accounts = session.query(Account).all()
     bonus_accounts = ["taitim484@gmail.com","powertaichi2@gmail.com"]
-    bonus_amount = 1.2
+    bonus_amount = 1.0
     for account in accounts:
         account_user = [temp.user for temp in account.users]
         for each in account_user:
