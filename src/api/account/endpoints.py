@@ -27,7 +27,7 @@ def get_accounts(request: Request, found: bool = Depends(Admin_Auth())):
 @router.get("/get_agents_stats")
 def get_accounts(request: Request, account_unique_key: str, start_date: Optional[str] = None,
                  end_date: Optional[str] = None, found: bool = Depends(Admin_Auth())):
-    args = {{"start": 1, "limit": 200}}
+    args = {"start": 1, "limit": 200}
 
     if start_date and end_date:
         start_date = datetime.strptime(start_date, '%Y-%m-%d')
@@ -53,7 +53,8 @@ def get_accounts(request: Request, account_unique_key: str, start_date: Optional
         for platform in Platforms:
             inner_data[platform.value] = 0
         for email in emails:
-            inner_data[email.platform] += int(email.amount)
+            if "$" in email.amount and len(email.amount)>=2:
+                inner_data[email.platform] += int(email.amount[:-1])
         data.append({each.user.email: inner_data})
     return data
 
