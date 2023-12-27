@@ -15,13 +15,10 @@ class UserBase(BaseModel):
 
 
 class Account(BaseModel):
-    name: str
-    email: str
     username: str
     password: str
     phone_number: str
     unique_id: str
-    is_email_authorised: Optional[bool]
 
 
 class UserAccounts(BaseModel):
@@ -47,7 +44,7 @@ class AccountUsers(Account):
 
 
 class GetAccounts(BaseModel):
-    accounts: List[AccountUsers]
+    accounts: List[Account]
     count: int
 
     class Config:

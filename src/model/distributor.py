@@ -5,22 +5,30 @@ from sqlalchemy.orm import relationship
 from .base import Base
 
 
-class Account(Base):
-    __tablename__ = "account"
-
+class Distributor(Base):
+    __tablename__ = "distributor"
+    email = Column(String, index=True, nullable=False, unique=True)
     username = Column(String, index=True, nullable=False, unique=True)
     status = Column(Boolean, default=True)
     phone_number = Column(String, nullable=False)
+    name = Column(String, nullable=False)
     password = Column(String, nullable=False)
     unique_id = Column(String, index=True)
-    users = relationship("AccountUser", back_populates="account")
-    platforms = relationship("AccountPlatform", back_populates="account")
-    distributors = relationship("DistributorAccounts", back_populates="account")
-
+    is_email_authorised = Column(Boolean, default=False)
+    accounts = relationship("DistributorAccounts", back_populates="distributor")
+    @classmethod
+    def get_by_email(cls, email: str):
+        row = db.session.query(cls).filter_by(email=email).first()
+        return row
 
     @classmethod
     def get_by_username(cls, username: str):
         row = db.session.query(cls).filter_by(username=username).first()
+        return row
+
+    @classmethod
+    def get_by_email_pass(cls, email: str, password: str):
+        row = db.session.query(cls).filter_by(email=email, password=password).first()
         return row
 
     @classmethod
