@@ -7,7 +7,7 @@ from fastapi import Request
 from fastapi_sqlalchemy import db
 from starlette.responses import RedirectResponse
 
-from api.distributor.schemas import SignupRequest, CreateAccount
+from api.distributor.schemas import SignupRequest, CreateAccount, GetDistributor
 from common.enums import Platforms
 from config import settings
 from helpers.deps import DistAuth, Admin_Auth
@@ -20,45 +20,44 @@ from model.distributor_accounts import DistributorAccounts
 
 router = APIRouter()
 
-@router.post("/get_distributors")
+@router.get("/get_distributors",response_model=GetDistributor)
 def get_accounts(request: Request, found: bool = Depends(Admin_Auth())):
     distributors, count = Distributor.filter_and_order({"start": 1, "limit": 200})
     data = {"distributors": distributors, "count": count}
     return data
 
-@router.get("/get_distributor_stats")
+@router.get("/get_distributor_account_stats")
 def get_accounts(request: Request, account_unique_key: str, start_date: Optional[str] = None,
                  end_date: Optional[str] = None, found: bool = Depends(Admin_Auth())):
-    args = {"start": 1, "limit": 200}
-
+    date = False
     if start_date and end_date:
         start_date = datetime.strptime(start_date, '%Y-%m-%d')
         end_date = datetime.strptime(end_date, '%Y-%m-%d')
         end_date = end_date + timedelta(days=1, minutes=-1)
-
-        args = {"start": 1, "limit": 200, "created_at:gte": start_date, "created_at:lte": end_date}
+        date = True
 
     account = Account.get_by_unique_id(account_unique_key)
     if not account:
         raise HTTPException(status_code=404, detail="Not Found")
 
     data = []
-    for each in account.users:
+    users = [each.user for each in account.users]
+    for user in users:
         inner_data = {}
-        query = db.session.query(Email).filter(Email.status == "Successful")
-        query = query.join(UserEmail, UserEmail.email_id == Email.id)
-        query = query.join(User, User.id == UserEmail.user_id)  # Changed UserEmail.id to UserEmail.user_id
-        query = query.filter(User.email == each.user.email)  # Filter by the user's email
-        query = query.join(AccountUser, AccountUser.user_id == User.id)
-        query = query.filter(AccountUser.account_id == account.id)
-        emails, count = Email.filter_and_order(args, query)
         for platform in Platforms:
             inner_data[platform.value] = 0
-        for email in emails:
-            if "$" in email.amount and len(email.amount) >= 2:
-                inner_data[email.platform] += int(email.amount[:-1])
-        data.append({each.user.email: inner_data})
+            if date:
+                args = {"account_username:eq": account.username, "user_email:eq": user.email, "start": 1, "limit": 1000,
+                        "created_at:gte": start_date, "created_at:lte": end_date, "platform:eq": platform.value}
+            else:
+                args = {"account_username:eq": account.username, "user_email:eq": user.email, "start": 1, "limit": 1000,
+                        "platform:eq": platform.value}
+            stats, _ = Stats.filter_and_order(args)
+            for stat in stats:
+                inner_data[platform.value] += stat.amount
+        data.append({user.email: inner_data})
     return data
+
 @router.post("/signup")
 def signup(request_body: SignupRequest, request: Request):
     unique_id = uuid.uuid4().hex

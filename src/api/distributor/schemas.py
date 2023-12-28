@@ -1,64 +1,64 @@
-from typing import List,Optional
+from typing import List, Optional
 
 from pydantic import BaseModel
 
 
-# class TempUser(BaseModel):
-#     id: int
-#     status: bool
-#     is_primary: bool
-#     authorised: bool
-#     email: str
-#     unique_id: str
-#     class Config:
-#         orm_mode = True
-class UserBase(BaseModel):
-    id: int
-    status: bool
-    authorised: bool
-    email: str
-    unique_id: str
-    class Config:
-        orm_mode = True
-
-from fastapi import APIRouter, HTTPException, Request
-from pydantic import BaseModel
-import uuid
-
-router = APIRouter()
-
-# Define the Pydantic model for the request body
 class CreateAccount(BaseModel):
-
     username: str
     password: str
+
+
 class SignupRequest(BaseModel):
     name: str
     email: str
     username: str
     password: str
     phone_number: str
-class Account(BaseModel):
-    name: str
-    email: str
+
+
+class Distributor(BaseModel):
     username: str
-    password: str
+    email: str
+    #password: str
     phone_number: str
-    unique_id : str
-    is_email_authorised : Optional[bool]
-class UserAccounts(BaseModel):
-    #primary_user: UserBase
-    user: UserBase
-    class Config:
-        orm_mode = True
-
-class GetUser(UserBase):
-    user_accounts: List[UserAccounts]
+    unique_id: str
+    status: bool
+    is_email_authorised: bool
 
     class Config:
         orm_mode = True
 
-class GetAccount(Account):
-    users: List[UserAccounts]
+
+class Account(BaseModel):
+    username: str
+   # password: str
+    status: bool
+    phone_number: str
+    unique_id: str
+    credit_last_seven : int
+    credit_last_thirty : int
+
+    class Config:
+        orm_mode = True
+
+
+class SubAccount(BaseModel):
+    account: Account
+
+    class Config:
+        orm_mode = True
+
+
+class DistAccounts(Distributor):
+    accounts: List[SubAccount]
+
+    class Config:
+        orm_mode = True
+
+
+class GetDistributor(BaseModel):
+    distributors: List[DistAccounts]
+    count: int
+
     class Config:
         orm_mode = True

@@ -19,6 +19,8 @@ class Account(BaseModel):
     password: str
     phone_number: str
     unique_id: str
+    credit_last_seven: int
+    credit_last_thirty: int
 
 
 class UserAccounts(BaseModel):

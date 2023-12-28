@@ -7,7 +7,7 @@ from fastapi import Request
 from api.account.schemas import GetAccounts
 from common.enums import Platforms
 from config import settings
-from helpers.deps import DistAuth
+from helpers.deps import DistAuth, Auth
 from helpers.jwt import create_admin_access_token, create_access_token
 from model import Distributor
 from model.account import Account
@@ -66,6 +66,7 @@ def get_accounts(request: Request, account_unique_key: str, start_date: Optional
     for user in users:
         inner_data = {}
         for platform in Platforms:
+            inner_data[platform.value] = 0
             if date:
                 args = {"account_username:eq": account.username, "user_email:eq": user.email, "start": 1, "limit": 1000,
                         "created_at:gte": start_date, "created_at:lte": end_date, "platform:eq": platform.value}
@@ -76,26 +77,4 @@ def get_accounts(request: Request, account_unique_key: str, start_date: Optional
             for stat in stats:
                 inner_data[platform.value] += stat.amount
         data.append({user.email: inner_data})
-
-    #
-    # account = Account.get_by_unique_id(account_unique_key)
-
-    #
-    # data = []
-    # for each in account.users:
-    #     inner_data = {}
-    #     query = db.session.query(Email).filter(Email.status == "Successful")
-    #     query = query.join(UserEmail, UserEmail.email_id == Email.id)
-    #     query = query.join(User, User.id == UserEmail.user_id)  # Changed UserEmail.id to UserEmail.user_id
-    #     query = query.filter(User.email == each.user.email)  # Filter by the user's email
-    #     query = query.join(AccountUser, AccountUser.user_id == User.id)
-    #     query = query.filter(AccountUser.account_id == account.id)
-    #     emails, count = Email.filter_and_order(args, query)
-    #     for platform in Platforms:
-    #         inner_data[platform.value] = 0
-    #     for email in emails:
-    #         if "$" in email.amount and len(email.amount) >= 2:
-    #             inner_data[email.platform] += int(email.amount[:-1])
-    #     data.append({each.user.email: inner_data})
-    data = {}
     return data
