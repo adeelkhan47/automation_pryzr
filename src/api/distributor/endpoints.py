@@ -4,7 +4,6 @@ from typing import Optional
 
 from fastapi import APIRouter, HTTPException, Depends
 from fastapi import Request
-from fastapi_sqlalchemy import db
 from starlette.responses import RedirectResponse
 
 from api.distributor.schemas import SignupRequest, CreateAccount, GetDistributor
@@ -14,7 +13,7 @@ from helpers.deps import DistAuth, Admin_Auth
 from helpers.email_service import send_email
 from helpers.jwt import create_access_token
 from helpers.response import jinja2_env
-from model import Account, Email, UserEmail, User, AccountUser
+from model import Account, Stats
 from model.distributor import Distributor
 from model.distributor_accounts import DistributorAccounts
 
