@@ -62,6 +62,8 @@ def send_email(recipient: str, subject: str, message: str) -> None:
     """
 
     try:
+        create_connection()
+        global server
         logging.info(f"Send email to {recipient} with subject {subject} and message:")
         sender_email = settings.mail_username
         receiver_email = recipient
