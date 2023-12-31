@@ -139,7 +139,7 @@ def create_account(request_body: CreateAccount, request: Request, distributor: D
     return "ok"
 
 
-@router.get("/delete_account")
+@router.delete("/delete_account")
 def delete_account(unique_id, request: Request, distributor: Distributor = Depends(DistAuth())):
     account = Account.get_by_unique_id(unique_id)
     if not account:
