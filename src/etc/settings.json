@@ -8,6 +8,7 @@
   "REDIRECT_URI": "https://www.autom8games.com/callback",
   "BASE_URL": "https://be.autom8games.com",
   "FE_URL": "https://www.autom8games.com",
+  "DIST_FE_URL": "https://www.distributor.autom8games.com",
   "SCOPES": [
     "openid",
     "https://www.googleapis.com/auth/gmail.readonly",

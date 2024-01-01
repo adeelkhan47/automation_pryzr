@@ -121,7 +121,7 @@ def confirm_email(unique_id: str):
     if time_difference > timedelta(days=7):
         raise HTTPException(status_code=404, detail="Expired Found.")
     Distributor.update(distributor.id, {"is_email_authorised": True})
-    return RedirectResponse(f"{settings.FE_URL}/signin")
+    return RedirectResponse(f"{settings.DIST_FE_URL}/signin")
 
 
 @router.post("/create_account")
