@@ -64,7 +64,7 @@ def process_new(self, *args, **kwargs):
                                                 amount = each_subject_ele.replace("$", "")
                                                 amount = math.floor(float(amount))
                                                 amount_store = f"{amount}$"
-                                                if account.email.lower() in bonus_accounts:
+                                                if distributor.email.lower() in bonus_accounts:
                                                     amount = int(amount) * bonus_amount
                                                     amount = math.floor(float(amount))
                                         result, reason, platform = run_platform(subject_platform, account, user_name,
