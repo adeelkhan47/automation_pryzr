@@ -127,7 +127,7 @@ def confirm_email(unique_id: str):
 @router.post("/create_account")
 def create_account(request_body: CreateAccount, request: Request, distributor: Distributor = Depends(DistAuth())):
     unique_id = uuid.uuid4().hex
-    if Distributor.get_by_username(request_body.username):
+    if Account.get_by_username(request_body.username):
         raise HTTPException(status_code=405, detail="Username Already Exists.")
     # Create the account
     account = Account(username=request_body.username,
