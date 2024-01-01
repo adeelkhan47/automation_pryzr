@@ -35,13 +35,12 @@ class SignupRequest(BaseModel):
     password: str
     phone_number: str
 class Account(BaseModel):
-    name: str
-    email: str
     username: str
-    password: str
     phone_number: str
     unique_id : str
-    is_email_authorised : Optional[bool]
+    status : bool
+    credit_last_seven : int
+    credit_last_thirty : int
 class UserAccounts(BaseModel):
     #primary_user: UserBase
     user: UserBase
