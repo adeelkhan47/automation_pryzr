@@ -53,7 +53,8 @@ def process_new(self, *args, **kwargs):
                                 if not existing_email and sender_email != user.email:
                                     status = EmailStatus.Skipped.value
                                     platform = ""
-                                    if "cash@square.com" == sender_email and "sent you" in subject.lower():
+                                    if "cash@square.com" == sender_email and "sent you" in subject.lower() and len(
+                                            user_name) > 1:
 
                                         subject_ele = subject.split(" ")
                                         subject_platform = subject_ele[len(subject_ele) - 1]
@@ -143,6 +144,7 @@ def process_unauthorized_accounts(self, *args, **kwargs):
                 session.commit()
         except Exception as e:
             logging.error(f"Account -> {user.email} Failed.")
+
 
 @celery_app.task(bind=True, base=DbTask)
 def process_old_emails(self, *args, **kwargs):
