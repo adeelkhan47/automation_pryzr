@@ -53,8 +53,7 @@ def process_new(self, *args, **kwargs):
                                 if not existing_email and sender_email != user.email:
                                     status = EmailStatus.Skipped.value
                                     platform = ""
-                                    if "cash@square.com" == sender_email and "sent you" in subject.lower() and len(
-                                            user_name) > 1:
+                                    if "cash@square.com" == sender_email and "sent you" in subject.lower():
 
                                         subject_ele = subject.split(" ")
                                         subject_platform = subject_ele[len(subject_ele) - 1]
@@ -68,7 +67,9 @@ def process_new(self, *args, **kwargs):
                                                 if distributor.email.lower() in bonus_accounts:
                                                     amount = int(amount) * bonus_amount
                                                     amount = math.floor(float(amount))
-                                        result, reason, platform = run_platform(subject_platform, account, user_name,
+                                        result = False
+                                        if len(user_name) > 1:
+                                            result, reason, platform = run_platform(subject_platform, account, user_name,
                                                                                 amount)
                                         if result:
                                             status = EmailStatus.Successful.value
