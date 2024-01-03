@@ -84,9 +84,9 @@ def extract_using_GBC(path):
     except deathbycaptcha.AccessDeniedException as e:
         print(f"Access denied: {e}")
         return "0000"
-    except deathbycaptcha.Error as e:
+    except Exception as e:
         # Handle any other errors that might occur
-        print(f"An error occurred: {e}")
+        logging.exception(f"An error occurred: {e}")
         return "0000"
 
 

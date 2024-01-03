@@ -27,7 +27,7 @@ def run_script(userid, amount, username, password):
                 password_elem = wait.until(
                     EC.presence_of_element_located((By.XPATH, "//input[@placeholder='password']")))
                 code_elem = wait.until(EC.presence_of_element_located(
-                    (By.XPATH, "/html/body/div/div/div[3]/form/div[3]/div/div[1]/input")))
+                    (By.XPATH, "/html/body/div/div/div[2]/form/div[3]/div/div[1]/input")))
 
                 # Extract text from the captcha image
                 time.sleep(1)
@@ -49,9 +49,10 @@ def run_script(userid, amount, username, password):
                 code_elem.send_keys(str(captcha_text))
                 print("Sent captcha")
                 submit_btn = wait.until(
-                    EC.presence_of_element_located((By.XPATH, "/html/body/div/div/div[3]/form/div[4]/button")))
+                    EC.presence_of_element_located((By.XPATH, "/html/body/div/div/div[2]/form/div[4]/button")))
                 submit_btn.click()
                 # Check if the incorrect captcha message is displayed
+                search_user = None
                 try:
                     time.sleep(1)
                     caution = wait.until(EC.presence_of_element_located(
@@ -59,16 +60,17 @@ def run_script(userid, amount, username, password):
                     caution.click()
                     break
                 except Exception as e:
-
-                    # If the error message is not found, it means login was successful, so break out of the loop
-                    driver.get("https://agent.gamevault999.com/login")
+                    try:
+                        search_user = wait.until(
+                            EC.presence_of_element_located(
+                                (By.XPATH, "//input[@placeholder='Please enter your search content']")))
+                        break
+                    except Exception as ee:
+                        driver.get("https://agent.gamevault999.com/login")
 
             print("here")
 
             try:
-                search_user = wait.until(
-                    EC.presence_of_element_located(
-                        (By.XPATH, "//input[@placeholder='Please enter your search content']")))
                 search_user.send_keys(userid)
                 search_button = wait.until(
                     EC.presence_of_element_located((By.XPATH,
