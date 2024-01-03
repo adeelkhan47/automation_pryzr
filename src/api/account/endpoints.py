@@ -60,21 +60,22 @@ def get_accounts(request: Request, account_unique_key: str, start_date: Optional
     account = Account.get_by_unique_id(account_unique_key)
     if not account:
         raise HTTPException(status_code=404, detail="Not Found")
-
+    distributor_id = account.distributors[0].distributor_id
+    user_emails = Stats.get_user_email_by_distributor_id(distributor_id)
     data = []
-    users = [each.user for each in account.users]
-    for user in users:
+    # users = [each.user for each in account.users]
+    for email in user_emails:
         inner_data = {}
         for platform in Platforms:
             inner_data[platform.value] = 0
             if date:
-                args = {"account_username:eq": account.username, "user_email:eq": user.email, "start": 1, "limit": 1000,
+                args = {"account_username:eq": account.username, "user_email:eq": email, "start": 1, "limit": 1000,
                         "created_at:gte": start_date, "created_at:lte": end_date, "platform:eq": platform.value}
             else:
-                args = {"account_username:eq": account.username, "user_email:eq": user.email, "start": 1, "limit": 1000,
+                args = {"account_username:eq": account.username, "user_email:eq": email, "start": 1, "limit": 1000,
                         "platform:eq": platform.value}
             stats, _ = Stats.filter_and_order(args)
             for stat in stats:
                 inner_data[platform.value] += stat.amount
-        data.append({user.email: inner_data})
+        data.append({email: inner_data})
     return data
