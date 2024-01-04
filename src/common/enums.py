@@ -33,4 +33,5 @@ class Platforms(Enum):
     Juwa = "Juwa"
     BlueDragon = "BlueDragon"
     GoldenDragon = "GoldenDragon"
+    Milkyway = "Milkyway"
 
