@@ -19,7 +19,8 @@ def run_script(userid, amount, username, password):
         try:
 
             driver.get("https://ht.juwa777.com/login")
-            while True:  # Start a loop to handle incorrect captchas
+            captcha_try = 10
+            while captcha_try > 0:  # Start a loop to handle incorrect captchas
                 # Find the username, password, and captcha input fields
                 username_elem = wait.until(
                     EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Please enter your account']")))
@@ -61,6 +62,7 @@ def run_script(userid, amount, username, password):
                     search_btn.click()
                     break
                 except Exception as e:
+                    captcha_try -= 1
                     driver.get("https://ht.juwa777.com/login")
             try:
                 search_user = wait.until(

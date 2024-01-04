@@ -6,7 +6,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-from helpers.common import extract_using_GBC, close_and_quit_driver, get_ubuntu_chrome_driver, get_mac_chrome_driver, \
+from helpers.common import close_and_quit_driver, get_ubuntu_chrome_driver, get_mac_chrome_driver, \
     extract_text_from_image
 
 

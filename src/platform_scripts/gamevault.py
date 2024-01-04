@@ -12,15 +12,16 @@ from helpers.common import extract_using_GBC, close_and_quit_driver, get_ubuntu_
 def run_script(userid, amount, username, password):
     tries = 5
     while tries >= 1:
-        # driver = get_mac_chrome_driver()
-        driver = get_ubuntu_chrome_driver()
+        driver = get_mac_chrome_driver()
+        #driver = get_ubuntu_chrome_driver()
         wait = WebDriverWait(driver, 2)
         status = False
         msg = ""
         try:
 
             driver.get("https://agent.gamevault999.com/login")
-            while True:  # Start a loop to handle incorrect captchas
+            captcha_try = 10
+            while captcha_try>0:  # Start a loop to handle incorrect captchas
                 # Find the username, password, and captcha input fields
                 username_elem = wait.until(
                     EC.presence_of_element_located((By.XPATH, "//input[@placeholder='username']")))
@@ -66,6 +67,7 @@ def run_script(userid, amount, username, password):
                                 (By.XPATH, "//input[@placeholder='Please enter your search content']")))
                         break
                     except Exception as ee:
+                        captcha_try -= 1
                         driver.get("https://agent.gamevault999.com/login")
 
             print("here")
