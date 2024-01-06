@@ -104,7 +104,7 @@ def process_new(self, *args, **kwargs):
                                     logging.error(f"{user.email} Success.")
 
                             except Exception as e:
-                                logging.exception(e)
+                                #logging.exception(e)
                                 new_email = Email(
                                     email_id=email["email_id"],
                                     subject=email["subject"],
@@ -122,7 +122,7 @@ def process_new(self, *args, **kwargs):
                                 session.add(user_email)
                                 session.commit()
                 except Exception as e:
-                    logging.error(f"Account : {account.email} and Email : {user.email} Failed.")
+                    logging.error(f"Account : {account.username} and Email : {user.email} Failed.")
 
 
 # logging.basicConfig(level=logging.INFO)
