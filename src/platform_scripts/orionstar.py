@@ -13,7 +13,7 @@ def run_script(userid, amount, username, password):
         # driver = get_mac_chrome_driver()
         driver = get_ubuntu_chrome_driver()
         wait = WebDriverWait(driver, 2)
-
+        found = False
         status = False
         msg = ""
         try:
@@ -35,9 +35,7 @@ def run_script(userid, amount, username, password):
                 # Fill in the login form and submit
                 username_elem.send_keys(username)
                 password_elem.send_keys(password)
-                print("Sending captcha")
                 code_elem.send_keys(captcha_text)
-                print("Sent captcha")
                 submit_btn = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "login-button-box")))
                 submit_btn.click()
 
@@ -55,38 +53,51 @@ def run_script(userid, amount, username, password):
             print("Switching to iframe")
             wait.until(EC.frame_to_be_available_and_switch_to_it((By.ID, "frm_main_content")))
             print("Searching for user")
-            try:
-                usersearch_elem = wait.until(
-                    EC.element_to_be_clickable((By.XPATH, "//input[@placeholder='ID,Account or NickName']")))
-                usersearch_elem.send_keys(userid)
+            usersearch_elem = wait.until(
+                EC.element_to_be_clickable((By.XPATH, "//input[@placeholder='ID,Account or NickName']")))
+            usersearch_elem.send_keys(userid)
 
-                search_btn = wait.until(EC.presence_of_element_located((By.XPATH,
-                                                                        "//a[contains(@class, 'btn13') and contains(@class, 'btn-danger1') and contains(text(), 'Search')]")))
-                search_btn.click()
+            search_btn = wait.until(EC.presence_of_element_located((By.XPATH,
+                                                                    "//a[contains(@class, 'btn13') and contains(@class, 'btn-danger1') and contains(text(), 'Search')]")))
+            search_btn.click()
+            ##
 
-                update_btn_xpath = "//a[@style='padding:6px; display: inline-block; text-align: center;font-family: sans-serif; cursor: pointer; background-color: #007dce; color: white; font-size: 14px; border-radius: 8px;height:16px;width:48px' and starts-with(@onclick, 'updateSelect')]"
-                update_btn = wait.until(EC.presence_of_element_located((By.XPATH, update_btn_xpath)))
-                update_btn.click()
+            count = 2
+            while not found:
+                try:
+                    update_btn_xpath = f"/html/body/form/div[3]/div[2]/table[1]/tbody/tr[{count}]/td[1]/a"
+                    update_btn = wait.until(EC.presence_of_element_located((By.XPATH, update_btn_xpath)))
+                    update_btn.click()
 
+                    result = wait.until(EC.presence_of_element_located((By.ID,
+                                                                        "txtAccount")))
+                    acocunt = result.text
+                    count += 1
+                    if acocunt.lower() == userid.lower():
+                        found = True
+                except Exception as eee:
+                    msg = "User Not Found"
+                    break
+
+            ##
+            if found:
                 recharge_btn = wait.until(EC.presence_of_element_located((By.XPATH,
                                                                           "//a[contains(@class, 'btn12') and contains(@class, 'btn-danger') and contains(text(), 'Recharge')]")))
                 recharge_btn.click()
-            except:
-                msg = "User Not Found"
-            driver.switch_to.default_content()
+                driver.switch_to.default_content()
 
-            # Switch to the new iframe using its `src` attribute
-            iframe_xpath = "//iframe[contains(@src, 'https://orionstars.vip:8781/Module/AccountManager/GrantTreasure.aspx?param=')]"
-            # driver.switch_to.frame(driver.find_element(By.XPATH, iframe_xpath))
-            wait.until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, iframe_xpath)))
+                # Switch to the new iframe using its `src` attribute
+                iframe_xpath = "//iframe[contains(@src, 'https://orionstars.vip:8781/Module/AccountManager/GrantTreasure.aspx?param=')]"
+                # driver.switch_to.frame(driver.find_element(By.XPATH, iframe_xpath))
+                wait.until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, iframe_xpath)))
 
-            # Now, locate and interact with the desired element inside the iframe
-            gold_elem = wait.until(EC.presence_of_element_located((By.ID, "txtAddGold")))
-            gold_elem.send_keys(amount)
+                # Now, locate and interact with the desired element inside the iframe
+                gold_elem = wait.until(EC.presence_of_element_located((By.ID, "txtAddGold")))
+                gold_elem.send_keys(amount)
 
-            recharge_btn = wait.until(EC.presence_of_element_located((By.ID, "Button1")))
-            recharge_btn.click()
-            status = True
+                recharge_btn = wait.until(EC.presence_of_element_located((By.ID, "Button1")))
+                recharge_btn.click()
+                status = True
         except Exception as e:
             logging.exception(e)
             if msg == "":
@@ -95,6 +106,8 @@ def run_script(userid, amount, username, password):
         finally:
             close_and_quit_driver(driver)
             tries -= 1
+            if not found:
+                return status, msg
             if status:
                 return status, msg
             if msg == "Internal Server Error" and tries < 1:
