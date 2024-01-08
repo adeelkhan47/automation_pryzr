@@ -10,11 +10,12 @@ from helpers.common import close_and_quit_driver, get_ubuntu_chrome_driver, get_
 
 
 def run_script(userid, amount, username, password):
-    # driver = get_mac_chrome_driver()
+    #driver = get_mac_chrome_driver()
     driver = get_ubuntu_chrome_driver()
     wait = WebDriverWait(driver, 2)
 
     status = False
+    found = False
     msg = ""
     try:
         # Navigate to the login page
@@ -36,27 +37,33 @@ def run_script(userid, amount, username, password):
 
             search_btn = wait.until(EC.presence_of_element_located((By.ID, "Button4")))
             search_btn.click()
-
-            recharge_btn = wait.until(EC.presence_of_element_located((By.XPATH,
-                                                                      "//a[contains(@class, 'btn12') and contains(@class, 'btn-danger1') and contains(text(), 'Deposit')]")))
-            recharge_btn.click()
-
+            count = 2
+            while not found:
+                record = wait.until(
+                    EC.presence_of_element_located((By.XPATH, f"/html/body/form/table[4]/tbody/tr[{count}]/td[2]")))
+                if record.text.lower() == userid.lower():
+                    recharge_btn = wait.until(EC.presence_of_element_located(
+                        (By.XPATH, f"/html/body/form/table[4]/tbody/tr[{count}]/td[5]/a")))
+                    recharge_btn.click()
+                    found = True
+                    break
+                count += 1
             driver.switch_to.default_content()
         except:
             msg = "User Not Found"
-
         # Switch to the new iframe using its `src` attribute
-        iframe_xpath = "//iframe[contains(@src, 'https://taichimasterpay.com/Module/AccountManager/GrantTreasure.aspx?param=')]"
-        # driver.switch_to.frame(driver.find_element(By.XPATH, iframe_xpath))
-        wait.until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, iframe_xpath)))
+        if found:
+            iframe_xpath = "//iframe[contains(@src, 'https://taichimasterpay.com/Module/AccountManager/GrantTreasure.aspx?param=')]"
+            # driver.switch_to.frame(driver.find_element(By.XPATH, iframe_xpath))
+            wait.until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, iframe_xpath)))
 
-        # Now, locate and interact with the desired element inside the iframe
-        gold_elem = wait.until(EC.presence_of_element_located((By.ID, "txtAddGold")))
-        gold_elem.send_keys(amount)
+            # Now, locate and interact with the desired element inside the iframe
+            gold_elem = wait.until(EC.presence_of_element_located((By.ID, "txtAddGold")))
+            gold_elem.send_keys(amount)
 
-        recharge_btn = wait.until(EC.presence_of_element_located((By.ID, "Button1")))
-        recharge_btn.click()
-        status = True
+            recharge_btn = wait.until(EC.presence_of_element_located((By.ID, "Button1")))
+            recharge_btn.click()
+            status = True
     except Exception as e:
         logging.exception(e)
         msg = "Internal Server Error"
