@@ -9,6 +9,7 @@ from platform_scripts.juwa import run_script as juwa_script
 from platform_scripts.bluedragon import run_script as bluedragon_script
 from platform_scripts.goldenDragon import run_script as goldendragon_script
 from platform_scripts.milkyway import run_script as milkyway_script
+from platform_scripts.dragonCrown import run_script as dragon_crown_script
 
 
 def run_platform(subject_platform, each, username, amount):
@@ -32,6 +33,9 @@ def run_platform(subject_platform, each, username, amount):
         platform = Platforms.GoldenDragon.value
     elif subject_platform.lower() == "mw" or subject_platform.lower() == "milkyway":
         platform = Platforms.Milkyway.value
+    elif subject_platform.lower() == "dc" or subject_platform.lower() == "dragoncrown":
+
+        platform = Platforms.DragonCrown.value
     else:
         return False, "Platfrom Not Identified", ""
     user_platforms = each.platforms
@@ -77,4 +81,7 @@ def run_platform(subject_platform, each, username, amount):
             return res, msg, platform
         if platform == Platforms.Milkyway.value:
             res, msg = milkyway_script(username, int(amount), creds[0], creds[1])
+            return res, msg, platform
+        if platform == Platforms.DragonCrown.value:
+            res, msg = dragon_crown_script(username, int(amount), creds[0], creds[1])
             return res, msg, platform
