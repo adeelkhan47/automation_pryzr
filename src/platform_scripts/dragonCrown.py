@@ -49,18 +49,20 @@ def run_script(userid, amount, username, password):
                     account_xpath = wait.until(EC.presence_of_element_located((By.XPATH, account_xpath)))
                     account = account_xpath.text
                     if account.lower() == userid.lower():
-                        found = True
                         sell_score_xpath = f"/html/body/div/div/div[1]/section[2]/div/div/div/div[4]/table/tbody/tr[{count}]/td[4]/a/i"
                         sell_score = wait.until(EC.presence_of_element_located((By.XPATH, sell_score_xpath)))
                         sell_score.click()
+                        #time.sleep(100)
+                        found = True
                     count += 1
                 except Exception as ee:
                     msg = "User Not Found"
                     break
             if found:
-                number_field = wait.until(EC.presence_of_element_located((By.ID,"number")))
-                number_field.send_keys(amount)
-                submit = wait.until(EC.presence_of_element_located((By.XPATH, "/html/body/div[1]/div/div[4]/div/div/form/div[2]/button[2]")))
+                #time.sleep(100)
+                number_field = wait.until(EC.presence_of_element_located((By.XPATH, "/html/body/div[1]/div/div[19]/div/div/form/div[1]/div/input")))
+                number_field.send_keys(str(amount))
+                submit = wait.until(EC.presence_of_element_located((By.XPATH, "/html/body/div[1]/div/div[19]/div/div/form/div[2]/button[2]")))
                 submit.click()
                 status = True
         except Exception as e:
