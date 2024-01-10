@@ -59,7 +59,7 @@ def run_script(userid, amount, username, password):
                     break
             if found:
                 number_field = wait.until(EC.presence_of_element_located((By.ID,"number")))
-                number_field.click()
+                number_field.send_keys(amount)
                 submit = wait.until(EC.presence_of_element_located((By.XPATH, "/html/body/div[1]/div/div[4]/div/div/form/div[2]/button[2]")))
                 submit.click()
                 status = True

@@ -34,7 +34,6 @@ def run_platform(subject_platform, each, username, amount):
     elif subject_platform.lower() == "mw" or subject_platform.lower() == "milkyway":
         platform = Platforms.Milkyway.value
     elif subject_platform.lower() == "dc" or subject_platform.lower() == "dragoncrown":
-
         platform = Platforms.DragonCrown.value
     else:
         return False, "Platfrom Not Identified", ""
