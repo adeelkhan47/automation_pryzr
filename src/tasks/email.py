@@ -105,7 +105,7 @@ def process_new(self, *args, **kwargs):
                                     logging.error(f"{user.email} Success.")
 
                             except Exception as e:
-                                #logging.exception(e)
+                                logging.exception(e)
                                 new_email = Email(
                                     email_id=email["email_id"],
                                     subject=email["subject"],
