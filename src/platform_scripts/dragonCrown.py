@@ -46,8 +46,10 @@ def run_script(userid, amount, username, password):
                 try:
                     account_xpath = f"/html/body/div/div/div[1]/section[2]/div/div/div/div[4]/table/tbody/tr[{count}]/td[2]"
                     account_xpath = wait.until(EC.presence_of_element_located((By.XPATH, account_xpath)))
-                    account = account_xpath.text
-                    if account.lower() == userid.lower():
+                    logging.info(f"{userid} : search_account = {account_xpath.text}")
+                    if account_xpath.text.lower() == userid.lower():
+                        logging.info(f"Mil Gya ")
+                        account = account_xpath.text
                         sell_score_xpath = f"/html/body/div/div/div[1]/section[2]/div/div/div/div[4]/table/tbody/tr[{count}]/td[4]/a/i"
                         sell_score = wait.until(EC.presence_of_element_located((By.XPATH, sell_score_xpath)))
                         sell_score.click()
