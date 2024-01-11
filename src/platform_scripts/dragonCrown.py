@@ -1,4 +1,5 @@
 import logging
+import time
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -57,6 +58,7 @@ def run_script(userid, amount, username, password):
                     msg = "User Not Found"
                     break
             if found:
+                time.sleep(1)
                 number_field = WebDriverWait(driver, 10).until(
                     EC.presence_of_element_located(
                         (By.XPATH, f"//input[starts-with(@placeholder, 'Input Sell To : {account}')]"))

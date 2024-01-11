@@ -56,7 +56,7 @@ def get_emails(user_auth, count=5):
             })
         return emails
     except Exception as e:
-        logging.exception(e)
+        #logging.exception(e)
         return None
 
 
