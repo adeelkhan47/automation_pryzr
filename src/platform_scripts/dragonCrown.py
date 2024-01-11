@@ -61,7 +61,6 @@ def run_script(userid, amount, username, password):
                     EC.presence_of_element_located(
                         (By.XPATH, f"//input[starts-with(@placeholder, 'Input Sell To : {account}')]"))
                 )
-                number_field.click()
                 number_field.send_keys(str(amount))
                 # Wait for the submit button in the same form as the input field and click it
                 # This XPath finds the closest ancestor form of the input field and then finds the submit button within that form
