@@ -37,16 +37,20 @@ def run_script(userid, amount, username, password):
             searchField = wait.until(
                 EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Account']")))
             searchField.send_keys(userid)
+            time.sleep(1)
             searchButton = wait.until(
                 EC.presence_of_element_located((By.CLASS_NAME, "submit")))
+            time.sleep(1)
             searchButton.click()
             count = 1
             account = ""
             while not found:
                 try:
+                    time.sleep(1)
                     account_xpath = f"/html/body/div/div/div[1]/section[2]/div/div/div/div[4]/table/tbody/tr[{count}]/td[2]"
                     account_xpath = wait.until(EC.presence_of_element_located((By.XPATH, account_xpath)))
                     logging.info(f"{userid} : search_account = {account_xpath.text}")
+                    print(f"{userid} : search_account = {account_xpath.text}")
                     if account_xpath.text.lower() == userid.lower():
                         logging.info(f"Mil Gya ")
                         account = account_xpath.text
@@ -64,6 +68,7 @@ def run_script(userid, amount, username, password):
                 time.sleep(1)
                 number_field = WebDriverWait(driver, 10).until(
                     EC.presence_of_element_located((By.XPATH, f"//input[starts-with(@placeholder, 'Input Sell To : {account}')]")))
+                time.sleep(1)
                 number_field.send_keys(str(amount))
                 submit_button = WebDriverWait(driver, 10).until(
                     EC.presence_of_element_located((By.XPATH,
