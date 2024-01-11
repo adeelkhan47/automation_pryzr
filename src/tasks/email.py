@@ -80,6 +80,7 @@ def process_new(self, *args, **kwargs):
                                             session.commit()
 
                                         else:
+                                            status = EmailStatus.Failed.value
                                             amount_store = ""
                                             user_name = ""
                                     else:
