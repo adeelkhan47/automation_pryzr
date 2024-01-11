@@ -60,14 +60,11 @@ def run_script(userid, amount, username, password):
                     msg = "User Not Found"
                     break
             if found:
+                logging.info(f"Search -> {account}")
                 time.sleep(1)
                 number_field = WebDriverWait(driver, 10).until(
-                    EC.presence_of_element_located(
-                        (By.XPATH, f"//input[starts-with(@placeholder, 'Input Sell To : {account}')]"))
-                )
+                    EC.presence_of_element_located((By.XPATH, f"//input[starts-with(@placeholder, 'Input Sell To : {account}')]")))
                 number_field.send_keys(str(amount))
-                # Wait for the submit button in the same form as the input field and click it
-                # This XPath finds the closest ancestor form of the input field and then finds the submit button within that form
                 submit_button = WebDriverWait(driver, 10).until(
                     EC.presence_of_element_located((By.XPATH,
                                                 f"//input[starts-with(@placeholder, 'Input Sell To : {account}')]/ancestor::div[contains(@class, 'modal-body')]/following-sibling::div[contains(@class, 'modal-footer')]/button[@type='submit']"))
