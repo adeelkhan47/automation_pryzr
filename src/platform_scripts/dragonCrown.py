@@ -1,13 +1,10 @@
 import logging
-import time
 
-import undetected_chromedriver as uc
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-from helpers.common import close_and_quit_driver, get_ubuntu_chrome_driver, get_mac_chrome_driver, \
-    extract_text_from_image
+from helpers.common import close_and_quit_driver, get_mac_chrome_driver, get_ubuntu_chrome_driver
 
 
 def run_script(userid, amount, username, password):
@@ -43,6 +40,7 @@ def run_script(userid, amount, username, password):
                 EC.presence_of_element_located((By.CLASS_NAME, "submit")))
             searchButton.click()
             count = 1
+            account = ""
             while not found:
                 try:
                     account_xpath = f"/html/body/div/div/div[1]/section[2]/div/div/div/div[4]/table/tbody/tr[{count}]/td[2]"
@@ -52,18 +50,26 @@ def run_script(userid, amount, username, password):
                         sell_score_xpath = f"/html/body/div/div/div[1]/section[2]/div/div/div/div[4]/table/tbody/tr[{count}]/td[4]/a/i"
                         sell_score = wait.until(EC.presence_of_element_located((By.XPATH, sell_score_xpath)))
                         sell_score.click()
-                        #time.sleep(100)
+                        # time.sleep(100)
                         found = True
                     count += 1
                 except Exception as ee:
                     msg = "User Not Found"
                     break
             if found:
-                #time.sleep(100)
-                number_field = wait.until(EC.presence_of_element_located((By.XPATH, "/html/body/div[1]/div/div[19]/div/div/form/div[1]/div/input")))
+                number_field = WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located(
+                        (By.XPATH, f"//input[starts-with(@placeholder, 'Input Sell To : {account}')]"))
+                )
+                number_field.click()
                 number_field.send_keys(str(amount))
-                submit = wait.until(EC.presence_of_element_located((By.XPATH, "/html/body/div[1]/div/div[19]/div/div/form/div[2]/button[2]")))
-                submit.click()
+                # Wait for the submit button in the same form as the input field and click it
+                # This XPath finds the closest ancestor form of the input field and then finds the submit button within that form
+                submit_button = WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located((By.XPATH,
+                                                f"//input[starts-with(@placeholder, 'Input Sell To : {account}')]/ancestor::div[contains(@class, 'modal-body')]/following-sibling::div[contains(@class, 'modal-footer')]/button[@type='submit']"))
+                )
+                submit_button.click()
                 status = True
         except Exception as e:
             logging.exception(e)
