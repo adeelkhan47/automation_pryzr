@@ -46,7 +46,7 @@ def run_script(userid, amount, username, password,url_key):
                 time.sleep(1)
                 driver.get("https://pos.goldendragoncity.com/CustomerAccount/")
 
-                select = wait.until(EC.presence_of_element_located((By.XPATH, "//option[@value='pin_id']"))).click()
+                select = wait.until(EC.presence_of_element_located((By.XPATH, "//option[@value='user_id']"))).click()
 
                 search = wait.until(EC.presence_of_element_located((By.ID, "searchPin")))
                 search.send_keys(userid)
