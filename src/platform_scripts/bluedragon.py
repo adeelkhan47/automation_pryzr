@@ -40,7 +40,7 @@ def run_script(userid, amount, username, password):
                 time.sleep(1)
                 driver.get("https://agent.bluedragon777.com/Work/com_Search.aspx")
                 print("Switching to iframe")
-                element = wait.until(EC.presence_of_element_located((By.XPATH, "//input[@value='1']")))
+                element = wait.until(EC.presence_of_element_located((By.XPATH, "//input[@value='0']")))
                 element.click()
                 input_user = wait.until(EC.presence_of_element_located((By.ID, 'txt_UserName')))
                 input_user.send_keys(userid)
