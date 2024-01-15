@@ -13,7 +13,7 @@ from model.user import User
 from model.user_emails import UserEmail
 from tasks.celery import DbTask, celery_app
 
-# logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.ERROR)
 logger = logging.getLogger(__file__)
 
 
