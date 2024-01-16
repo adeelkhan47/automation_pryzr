@@ -16,6 +16,7 @@ def run_script(userid, amount, username, password):
         driver = get_ubuntu_chrome_driver()
         wait = WebDriverWait(driver, 2)
         status = False
+        found = False
         msg = ""
         try:
 
@@ -28,7 +29,7 @@ def run_script(userid, amount, username, password):
                 password_elem = wait.until(
                     EC.presence_of_element_located((By.XPATH, "//input[@placeholder='password']")))
                 code_elem = wait.until(EC.presence_of_element_located(
-                    (By.XPATH, "/html/body/div/div/div[2]/form/div[3]/div/div[1]/input")))
+                    (By.XPATH, "/html/body/div/div/div/form/div[3]/div/div[1]/input")))
 
                 # Extract text from the captcha image
                 time.sleep(1)
@@ -50,7 +51,7 @@ def run_script(userid, amount, username, password):
                 code_elem.send_keys(str(captcha_text))
                 print("Sent captcha")
                 submit_btn = wait.until(
-                    EC.presence_of_element_located((By.XPATH, "/html/body/div/div/div[2]/form/div[4]/button")))
+                    EC.presence_of_element_located((By.XPATH, "//span[text()='Sign in']")))
                 submit_btn.click()
                 # Check if the incorrect captcha message is displayed
                 search_user = None
@@ -69,33 +70,42 @@ def run_script(userid, amount, username, password):
                     except Exception as ee:
                         captcha_try -= 1
                         driver.get("https://agent.gamevault999.com/login")
+            search_user.send_keys(userid)
+            search_button = wait.until(
+                EC.presence_of_element_located((By.XPATH,
+                                                "/html/body/div[1]/div/div[4]/div[2]/div[2]/section/div[2]/form/div[2]/div/button[1]")))
+            search_button.click()
+            time.sleep(1)
+            count = 0
+            while not found:
+                try:
+                    count += 1
+                    account = f"/html/body/div[1]/div/div[4]/div[2]/div[2]/section/div[4]/div[3]/table/tbody/tr[{count}]/td[4]/div"
+                    account = wait.until(EC.presence_of_element_located((By.XPATH, account))).text
+                    print(account)
 
-            print("here")
-
-            try:
-                search_user.send_keys(userid)
-                search_button = wait.until(
-                    EC.presence_of_element_located((By.XPATH,
-                                                    "/html/body/div[1]/div/div[4]/div[2]/div[2]/section/div[2]/form/div[2]/div/button[1]")))
-                search_button.click()
+                    if account.lower() == userid.lower():
+                        found = True
+                except Exception as eee:
+                    msg = "User Not Found"
+                    break
+            ##
+            if found:
                 edit_user = wait.until(EC.presence_of_element_located((By.XPATH,
-                                                                       "/html/body/div[1]/div/div[4]/div[2]/div[2]/section/div[4]/div[3]/table/tbody/tr/td[1]/div/button")))
+                                                                       f"/html/body/div[1]/div/div[4]/div[2]/div[2]/section/div[4]/div[3]/table/tbody/tr[{count}]/td[1]/div/button")))
                 edit_user.click()
-
-
-            except Exception as e:
-                msg = "User Not Found"
-            recharge_button = wait.until(EC.presence_of_element_located((By.XPATH,
-                                                                         "/html/body/div[1]/div/div[4]/div[2]/div[2]/section/div[1]/div[1]/div[2]/div/button[2]")))
-            recharge_button.click()
-            set_price = wait.until(EC.presence_of_element_located((By.XPATH,
-                                                                   "/html/body/div[1]/div/div[4]/div[2]/div[2]/section/div[1]/div[4]/div/div[2]/form/div[5]/div/div/input")))
-            set_price.send_keys(amount)
-            submit = wait.until(EC.presence_of_element_located(
-                (By.XPATH, "/html/body/div[1]/div/div[4]/div[2]/div[2]/section/div[1]/div[4]/div/div[3]/button[2]")))
-            submit.click()
-
-            status = True
+    ##
+                recharge_button = wait.until(EC.presence_of_element_located((By.XPATH,
+                                                                             "/html/body/div[1]/div/div[4]/div[2]/div[2]/section/div[1]/div[1]/div[2]/div/button[2]")))
+                recharge_button.click()
+                set_price = wait.until(EC.presence_of_element_located((By.XPATH,
+                                                                       "/html/body/div[1]/div/div[4]/div[2]/div[2]/section/div[1]/div[4]/div/div[2]/form/div[5]/div/div/input")))
+                set_price.send_keys(amount)
+                submit = wait.until(EC.presence_of_element_located(
+                    (By.XPATH, "/html/body/div[1]/div/div[4]/div[2]/div[2]/section/div[1]/div[4]/div/div[3]/button[2]")))
+                submit.click()
+                time.sleep(1)
+                status = True
         except Exception as e:
             logging.exception(e)
             if msg == "":
@@ -104,6 +114,8 @@ def run_script(userid, amount, username, password):
         finally:
             close_and_quit_driver(driver)
             tries -= 1
+            if not found:
+                return status, msg
             if status:
                 return status, msg
             if msg == "Internal Server Error" and tries < 1:
