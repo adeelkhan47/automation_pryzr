@@ -10,6 +10,7 @@ from platform_scripts.bluedragon import run_script as bluedragon_script
 from platform_scripts.goldenDragon import run_script as goldendragon_script
 from platform_scripts.milkyway import run_script as milkyway_script
 from platform_scripts.dragonCrown import run_script as dragon_crown_script
+from platform_scripts.bigWinner import run_script as big_winner_script
 
 
 def run_platform(subject_platform, each, username, amount):
@@ -35,6 +36,8 @@ def run_platform(subject_platform, each, username, amount):
         platform = Platforms.Milkyway.value
     elif subject_platform.lower() == "dc" or subject_platform.lower() == "dragoncrown":
         platform = Platforms.DragonCrown.value
+    elif subject_platform.lower() == "bw" or subject_platform.lower() == "bigwinner":
+        platform = Platforms.BigWinner.value
     else:
         return False, "Platfrom Not Identified", ""
     user_platforms = each.platforms
@@ -83,4 +86,7 @@ def run_platform(subject_platform, each, username, amount):
             return res, msg, platform
         if platform == Platforms.DragonCrown.value:
             res, msg = dragon_crown_script(username, int(amount), creds[0], creds[1])
+            return res, msg, platform
+        if platform == Platforms.BigWinner.value:
+            res, msg = big_winner_script(username, int(amount), creds[0], creds[1])
             return res, msg, platform

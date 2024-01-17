@@ -35,4 +35,5 @@ class Platforms(Enum):
     GoldenDragon = "GoldenDragon"
     Milkyway = "Milkyway"
     DragonCrown = "DragonCrown"
+    BigWinner = "BigWinner"
 
