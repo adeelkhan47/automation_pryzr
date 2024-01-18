@@ -22,7 +22,8 @@ def run_script(userid, amount, username, password):
         try:
             # Navigate to the login page
             driver.get("https://dl.bigwplay.com/admin/login/index.html?lang=en-us")
-            while True:
+            max_tries = 10
+            while max_tries>0:
                 username_elem = wait.until(
                     EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Username']")))
                 password_elem = wait.until(
@@ -38,21 +39,36 @@ def run_script(userid, amount, username, password):
                 submit_btn = wait.until(
                         EC.presence_of_element_located((By.XPATH, "//input[@id='doLoginbtn']")))
                 submit_btn.click()
-                try :
+                try:
                     ok_button = wait.until(
                         EC.presence_of_element_located((By.XPATH, "//a[text()='ok']")))
                     ok_button.click()
+                    try:
+                        ok_button = wait.until(
+                            EC.presence_of_element_located((By.XPATH, "//a[text()='ok']")))
+                        ok_button.click()
+                    except Exception:
+                        print("do nothing")
                     drawer = wait.until(EC.presence_of_element_located(
                         (By.XPATH, "//span[text()='Player management']")))
 
                     drawer.click()
                     break
                 except Exception as e:
+                    max_tries -= 1
                     try:
+                        try:
+                            ok_button = wait.until(
+                                EC.presence_of_element_located((By.XPATH, "//a[text()='ok']")))
+                            ok_button.click()
+                        except Exception:
+                            print("do nothing")
                         drawer = wait.until(EC.presence_of_element_located(
                             (By.XPATH, "//span[text()='Player management']")))
                         drawer.click()
                     except Exception as ee:
+
+                        logging.exception(e)
                         driver.get("https://dl.bigwplay.com/admin/login/index.html?lang=en-us")
 
             drawer = wait.until(EC.presence_of_element_located(
