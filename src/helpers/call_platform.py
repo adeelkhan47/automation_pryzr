@@ -73,8 +73,9 @@ def run_platform(subject_platform, each, username, amount):
             res, msg = orion_script(username, int(amount), creds[0], creds[1])
             return res, msg, platform
         if platform == Platforms.Juwa.value:
-            res, msg = juwa_script(username, int(amount), creds[0], creds[1])
-            return res, msg, platform
+            #res, msg = juwa_script(username, int(amount), creds[0], creds[1])
+            #return res, msg, platform
+            return False, "Skipped",platform
         if platform == Platforms.BlueDragon.value:
             res, msg = bluedragon_script(username, int(amount), creds[0], creds[1])
             return res, msg, platform
