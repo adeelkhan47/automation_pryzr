@@ -56,6 +56,7 @@ def run_script(userid, amount, username, password):
                     search_btn.click()
                     break
                 except Exception as e:
+                    logging.exception(e)
                     captcha_try -= 1
                     driver.get("https://ht.juwa777.com/login")
 
