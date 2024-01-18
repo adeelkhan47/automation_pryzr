@@ -36,4 +36,5 @@ class Platforms(Enum):
     Milkyway = "Milkyway"
     DragonCrown = "DragonCrown"
     BigWinner = "BigWinner"
+    UltraPanda = "UltraPanda"
 

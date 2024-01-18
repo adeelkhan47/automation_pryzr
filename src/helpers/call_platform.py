@@ -11,6 +11,7 @@ from platform_scripts.goldenDragon import run_script as goldendragon_script
 from platform_scripts.milkyway import run_script as milkyway_script
 from platform_scripts.dragonCrown import run_script as dragon_crown_script
 from platform_scripts.bigWinner import run_script as big_winner_script
+from platform_scripts.ultraPanda import run_script as ultra_panda_script
 
 
 def run_platform(subject_platform, each, username, amount):
@@ -38,8 +39,10 @@ def run_platform(subject_platform, each, username, amount):
         platform = Platforms.DragonCrown.value
     elif subject_platform.lower() == "bw" or subject_platform.lower() == "bigwinner":
         platform = Platforms.BigWinner.value
+    elif subject_platform.lower() == "up" or subject_platform.lower() == "ultrapanda":
+        platform = Platforms.UltraPanda.value
     else:
-        return False, "Platfrom Not Identified", ""
+        return False, "Platform Not Identified", ""
     user_platforms = each.platforms
     creds = None
     for each_user_platforms in user_platforms:
@@ -75,7 +78,6 @@ def run_platform(subject_platform, each, username, amount):
         if platform == Platforms.Juwa.value:
             res, msg = juwa_script(username, int(amount), creds[0], creds[1])
             return res, msg, platform
-            #return False, "Skipped",platform
         if platform == Platforms.BlueDragon.value:
             res, msg = bluedragon_script(username, int(amount), creds[0], creds[1])
             return res, msg, platform
@@ -90,4 +92,7 @@ def run_platform(subject_platform, each, username, amount):
             return res, msg, platform
         if platform == Platforms.BigWinner.value:
             res, msg = big_winner_script(username, int(amount), creds[0], creds[1])
+            return res, msg, platform
+        if platform == Platforms.UltraPanda.value:
+            res, msg = ultra_panda_script(username, int(amount), creds[0], creds[1])
             return res, msg, platform
