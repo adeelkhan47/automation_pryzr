@@ -60,17 +60,24 @@ def run_script(userid, amount, username, password):
                     caution = wait.until(EC.presence_of_element_located(
                         (By.XPATH, "/html/body/div[5]/div/div[3]/button/span")))
                     caution.click()
+                    search_user = wait.until(
+                        EC.presence_of_element_located(
+                            (By.XPATH, "//input[@placeholder='Please enter your search content']")))
+                    search_user.send_keys(userid)
                     break
                 except Exception as e:
                     try:
                         search_user = wait.until(
                             EC.presence_of_element_located(
                                 (By.XPATH, "//input[@placeholder='Please enter your search content']")))
+                        search_user.send_keys(userid)
                         break
                     except Exception as ee:
                         captcha_try -= 1
                         driver.get("https://agent.gamevault999.com/login")
-            search_user.send_keys(userid)
+
+
+            time.sleep(1)
             search_button = wait.until(
                 EC.presence_of_element_located((By.XPATH,
                                                 "/html/body/div[1]/div/div[4]/div[2]/div[2]/section/div[2]/form/div[2]/div/button[1]")))
@@ -98,6 +105,7 @@ def run_script(userid, amount, username, password):
                 recharge_button = wait.until(EC.presence_of_element_located((By.XPATH,
                                                                              "/html/body/div[1]/div/div[4]/div[2]/div[2]/section/div[1]/div[1]/div[2]/div/button[2]")))
                 recharge_button.click()
+                time.sleep(1)
                 set_price = wait.until(EC.presence_of_element_located((By.XPATH,
                                                                        "/html/body/div[1]/div/div[4]/div[2]/div[2]/section/div[1]/div[4]/div/div[2]/form/div[5]/div/div/input")))
                 set_price.send_keys(amount)
