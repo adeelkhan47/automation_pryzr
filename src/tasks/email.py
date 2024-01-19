@@ -22,7 +22,7 @@ def process_new(self, *args, **kwargs):
     session = self.session
     distributors = session.query(Distributor).filter(Distributor.status == True).all()
     #bonus_accounts = ["taitim484@gmail.com", "powertaichi2@gmail.com"]
-    bonus_accounts = ["powertaichi7@gmail.com"]
+    bonus_accounts = ["powertaichi2@gmail.com"]
     bonus_amount = 1.2
     for distributor in distributors:
         accounts = [temp.account for temp in distributor.accounts if temp.account.status]
