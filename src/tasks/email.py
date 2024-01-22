@@ -22,7 +22,7 @@ def process_new(self, *args, **kwargs):
     session = self.session
     distributors = session.query(Distributor).filter(Distributor.status == True).all()
     #bonus_accounts = ["taitim484@gmail.com", "powertaichi2@gmail.com"]
-    bonus_accounts = ["powertaichi2@gmail.com"]
+    bonus_accounts = ["realdealautom8@gmail.com"]
     bonus_amount = 1.2
     for distributor in distributors:
         accounts = [temp.account for temp in distributor.accounts if temp.account.status]
@@ -65,7 +65,7 @@ def process_new(self, *args, **kwargs):
                                                 amount = each_subject_ele.replace("$", "")
                                                 amount = math.floor(float(amount))
                                                 amount_store = f"{amount}$"
-                                                if distributor.email.lower() in bonus_accounts:
+                                                if user.email.lower() in bonus_accounts:
                                                     amount = int(amount) * bonus_amount
                                                     amount = math.floor(float(amount))
                                         result = False
