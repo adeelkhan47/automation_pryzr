@@ -12,6 +12,7 @@ from platform_scripts.milkyway import run_script as milkyway_script
 from platform_scripts.dragonCrown import run_script as dragon_crown_script
 from platform_scripts.bigWinner import run_script as big_winner_script
 from platform_scripts.ultraPanda import run_script as ultra_panda_script
+from platform_scripts.dragonworld import run_script as dragon_world_script
 
 
 def run_platform(subject_platform, each, username, amount,know_platform=""):
@@ -44,6 +45,8 @@ def run_platform(subject_platform, each, username, amount,know_platform=""):
             platform = Platforms.BigWinner.value
         elif subject_platform.lower() == "up" or subject_platform.lower() == "ultrapanda":
             platform = Platforms.UltraPanda.value
+        elif subject_platform.lower() == "dw" or subject_platform.lower() == "dragonworld":
+            platform = Platforms.DragonWorld.value
         else:
             return False, "Platform Not Identified", ""
     user_platforms = each.platforms
@@ -98,4 +101,7 @@ def run_platform(subject_platform, each, username, amount,know_platform=""):
             return res, msg, platform
         if platform == Platforms.UltraPanda.value:
             res, msg = ultra_panda_script(username, int(amount), creds[0], creds[1])
+            return res, msg, platform
+        if platform == Platforms.DragonWorld.value:
+            res, msg = dragon_world_script(username, int(amount), creds[0], creds[1])
             return res, msg, platform
