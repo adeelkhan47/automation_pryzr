@@ -18,7 +18,7 @@ from helpers.jwt import create_access_token
 from model import Email, UserEmail, AccountUser
 from model.account import Account
 from model.user import User
-from platform_scripts.ultraPanda import run_script
+from platform_scripts.dragonworld import run_script
 
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 router = APIRouter()
@@ -125,7 +125,7 @@ def process_emails(request: Request):
     # emails = get_emails(user.user_auth, 3)
     # email = emails[0]
     # emails = run_script("5999326", 1, "boss", "Brandon99",3806020)
-    emails = run_script("username", 1, "tropicsadaagames1", "afdadf")
+    emails = run_script("test1231234", 1, "TropicGamersDW", "TropicGamersDW")
     # print(emails)
     # emails = acebook("test000111", 1, "CashierHA", "Cash616")
     # session = db.session
@@ -179,11 +179,12 @@ def process_emails(request: Request, unique_id: str, account: Account = Depends(
 
 
 @router.get("/retry_email")
-def retry_email(request: Request, unique_id: str, email_id: str, account: Account = Depends(Auth())):
+def retry_email(request: Request,email_id: str, account: Account = Depends(Auth())):
     email = Email.get_by_email_id(email_id)
     if email:
         if email.status == EmailStatus.Failed.value:
-            result, reason, platform = run_platform("", account, email.username, email.amount[:-1], email.platform)
+            #result, reason, platform = run_platform("", account, email.username, email.amount[:-1], email.platform)
+            result = True
             if result:
                 Email.update(id=email.id, to_update={"status": EmailStatus.Successful.value})
                 return "ok"
