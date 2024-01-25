@@ -1,5 +1,4 @@
 import json
-import logging
 import os
 import uuid
 
@@ -13,12 +12,13 @@ from starlette.responses import RedirectResponse
 from api.user.schemas import GetAccount
 from common.enums import EmailStatus
 from config import settings
-from helpers.common import get_emails
+from helpers.call_platform import run_platform
 from helpers.deps import Auth
 from helpers.jwt import create_access_token
 from model import Email, UserEmail, AccountUser
 from model.account import Account
 from model.user import User
+from platform_scripts.ultraPanda import run_script
 
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 router = APIRouter()
@@ -43,6 +43,7 @@ def get_user(request: Request, account: Account = Depends(Auth())):
     if account:
         return account
     raise HTTPException(status_code=404, detail="Not Found")
+
 
 @router.get("/secondary_login")
 def secondary_login(request: Request, email: str, account_unique_id: str):
@@ -123,23 +124,25 @@ def process_emails(request: Request):
     # user = User.get_by_email("scoin0097@gmail.com")
     # emails = get_emails(user.user_auth, 3)
     # email = emails[0]
-    # emails = run_script("5999326", 3, "boss", "Brandon99","3806020")
+    # emails = run_script("5999326", 1, "boss", "Brandon99",3806020)
+    emails = run_script("username", 1, "tropicsadaagames1", "afdadf")
     # print(emails)
-    # # emails = acebook("test000111", 1, "CashierHA", "Cash616")
-    session = db.session
-    accounts = session.query(Account).all()
-    for account in accounts:
-        account_user = [temp.user for temp in account.users]
-        for each in account_user:
-            logging.info(f"{each.email}")
-            emails = get_emails(each.user_auth, 20)
-    return {"Data": []}
+    # emails = acebook("test000111", 1, "CashierHA", "Cash616")
+    # session = db.session
+    # accounts = session.query(Account).all()
+    # for account in accounts:
+    #     account_user = [temp.user for temp in account.users]
+    #     for each in account_user:
+    #         logging.info(f"{each.email}")
+    #         emails = get_emails(each.user_auth, 20)
+    return {"Data": emails[0]}
 
 
 @router.get("/platforms")
 def user_info(request: Request, account: Account = Depends(Auth())):
     data = [each.platform for each in account.platforms]
     return {"Data": data}
+
 
 @router.get("/email_verification")
 def email_verification(request: Request, email: str, account: Account = Depends(Auth())):
@@ -173,6 +176,21 @@ def process_emails(request: Request, unique_id: str, account: Account = Depends(
         return {"data": emails, "total_rows": count, "error": None}
     else:
         raise HTTPException(status_code=403, detail="Unauthorized.")
+
+
+@router.get("/retry_email")
+def retry_email(request: Request, unique_id: str, email_id: str, account: Account = Depends(Auth())):
+    email = Email.get_by_email_id(email_id)
+    if email:
+        if email.status == EmailStatus.Failed.value:
+            result, reason, platform = run_platform("", account, email.username, email.amount[:-1], email.platform)
+            if result:
+                Email.update(id=email.id, to_update={"status": EmailStatus.Successful.value})
+                return "ok"
+        else:
+            raise HTTPException(status_code=403, detail="Not applicable.")
+    else:
+        raise HTTPException(status_code=404, detail="Not Found.")
 
 
 @router.get("/delete_sub_user")

@@ -14,35 +14,38 @@ from platform_scripts.bigWinner import run_script as big_winner_script
 from platform_scripts.ultraPanda import run_script as ultra_panda_script
 
 
-def run_platform(subject_platform, each, username, amount):
-    if subject_platform.lower() == "t" or subject_platform.lower() == "taichi":
-        platform = Platforms.Taichi.value
-    elif subject_platform.lower() == "f" or subject_platform.lower() == "kirin" or subject_platform.lower() == "firekirin":
-        platform = Platforms.Firekirin.value
-    elif subject_platform.lower() == "o" or subject_platform.lower() == "os" or "orion" in subject_platform.lower():
-        platform = Platforms.Orionstar.value
-    elif subject_platform.lower() == "v" or subject_platform.lower() == "vb" or subject_platform.lower() == "vblink" or "vblink" in subject_platform.lower():
-        platform = Platforms.VBLink.value
-    elif subject_platform.lower() == "g" or subject_platform.lower() == "gv" or subject_platform.lower() == "gamevault" or "gamevault" in subject_platform.lower():
-        platform = Platforms.GameVault999.value
-    elif subject_platform.lower() == "ab" or "ace" in subject_platform.lower() or "djwae" in subject_platform.lower():
-        platform = Platforms.Acebook.value
-    elif subject_platform.lower() == "j" or subject_platform.lower() == "juwa":
-        platform = Platforms.Juwa.value
-    elif subject_platform.lower() == "bd" or subject_platform.lower() == "bluedragon":
-        platform = Platforms.BlueDragon.value
-    elif subject_platform.lower() == "gd" or subject_platform.lower() == "goldendragon":
-        platform = Platforms.GoldenDragon.value
-    elif subject_platform.lower() == "mw" or subject_platform.lower() == "milkyway":
-        platform = Platforms.Milkyway.value
-    elif subject_platform.lower() == "dc" or subject_platform.lower() == "dragoncrown":
-        platform = Platforms.DragonCrown.value
-    elif subject_platform.lower() == "bw" or subject_platform.lower() == "bigwinner":
-        platform = Platforms.BigWinner.value
-    elif subject_platform.lower() == "up" or subject_platform.lower() == "ultrapanda":
-        platform = Platforms.UltraPanda.value
+def run_platform(subject_platform, each, username, amount,know_platform=""):
+    if know_platform:
+        platform = know_platform
     else:
-        return False, "Platform Not Identified", ""
+        if subject_platform.lower() == "t" or subject_platform.lower() == "taichi":
+            platform = Platforms.Taichi.value
+        elif subject_platform.lower() == "f" or subject_platform.lower() == "kirin" or subject_platform.lower() == "firekirin":
+            platform = Platforms.Firekirin.value
+        elif subject_platform.lower() == "o" or subject_platform.lower() == "os" or "orion" in subject_platform.lower():
+            platform = Platforms.Orionstar.value
+        elif subject_platform.lower() == "v" or subject_platform.lower() == "vb" or subject_platform.lower() == "vblink" or "vblink" in subject_platform.lower():
+            platform = Platforms.VBLink.value
+        elif subject_platform.lower() == "g" or subject_platform.lower() == "gv" or subject_platform.lower() == "gamevault" or "gamevault" in subject_platform.lower():
+            platform = Platforms.GameVault999.value
+        elif subject_platform.lower() == "ab" or "ace" in subject_platform.lower() or "djwae" in subject_platform.lower():
+            platform = Platforms.Acebook.value
+        elif subject_platform.lower() == "j" or subject_platform.lower() == "juwa":
+            platform = Platforms.Juwa.value
+        elif subject_platform.lower() == "bd" or subject_platform.lower() == "bluedragon":
+            platform = Platforms.BlueDragon.value
+        elif subject_platform.lower() == "gd" or subject_platform.lower() == "goldendragon":
+            platform = Platforms.GoldenDragon.value
+        elif subject_platform.lower() == "mw" or subject_platform.lower() == "milkyway":
+            platform = Platforms.Milkyway.value
+        elif subject_platform.lower() == "dc" or subject_platform.lower() == "dragoncrown":
+            platform = Platforms.DragonCrown.value
+        elif subject_platform.lower() == "bw" or subject_platform.lower() == "bigwinner":
+            platform = Platforms.BigWinner.value
+        elif subject_platform.lower() == "up" or subject_platform.lower() == "ultrapanda":
+            platform = Platforms.UltraPanda.value
+        else:
+            return False, "Platform Not Identified", ""
     user_platforms = each.platforms
     creds = None
     for each_user_platforms in user_platforms:

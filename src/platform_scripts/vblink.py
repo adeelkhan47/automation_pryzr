@@ -62,6 +62,7 @@ def run_script(userid, amount, username, password):
             set_score_btn = wait.until(EC.element_to_be_clickable(
                 (By.XPATH, "//button[contains(@class, 'el-button--warning') and .//span[text()='Set Score']]")))
             set_score_btn.click()
+            time.sleep(3)
         except:
             msg = "User Not Found"
         amount_elem = wait.until(EC.element_to_be_clickable((By.XPATH, "//input[@placeholder='Set points : ie 100']")))
