@@ -38,4 +38,5 @@ class Platforms(Enum):
     BigWinner = "BigWinner"
     UltraPanda = "UltraPanda"
     DragonWorld = "DragonWorld"
+    PandaMaster = "PandaMaster"
 
