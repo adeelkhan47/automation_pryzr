@@ -63,6 +63,7 @@ def run_script(userid, amount, username, password):
 
             recharge_btn = wait.until(EC.presence_of_element_located((By.ID, "Button1")))
             recharge_btn.click()
+            time.sleep(1)
             status = True
     except Exception as e:
         logging.exception(e)
