@@ -7,7 +7,7 @@ import math
 from common.enums import EmailStatus
 from helpers.call_platform import run_platform
 from helpers.common import get_emails
-from model import Email, Account, Distributor
+from model import Email, Distributor
 from model.stats import Stats
 from model.user import User
 from model.user_emails import UserEmail
@@ -22,7 +22,7 @@ def process_new(self, *args, **kwargs):
     session = self.session
     distributors = session.query(Distributor).filter(Distributor.status == True).all()
     #bonus_accounts = ["taitim484@gmail.com", "powertaichi2@gmail.com"]
-    bonus_accounts = ["realdealautom8@gmail.com"]
+    bonus_accounts = ["realdealautom8@gmail.com","petersmith1love@gmail.com"]
     bonus_amount = 1.2
     for distributor in distributors:
         accounts = [temp.account for temp in distributor.accounts if temp.account.status]
