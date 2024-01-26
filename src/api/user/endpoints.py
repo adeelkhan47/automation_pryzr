@@ -183,8 +183,7 @@ def retry_email(request: Request,email_id: str, account: Account = Depends(Auth(
     email = Email.get_by_email_id(email_id)
     if email:
         if email.status == EmailStatus.Failed.value:
-            #result, reason, platform = run_platform("", account, email.username, email.amount[:-1], email.platform)
-            result = True
+            result, reason, platform = run_platform("", account, email.username, email.amount[:-1], email.platform)
             if result:
                 Email.update(id=email.id, to_update={"status": EmailStatus.Successful.value})
                 return "ok"
