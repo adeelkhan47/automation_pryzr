@@ -23,10 +23,14 @@ def process_new(self, *args, **kwargs):
     distributors = session.query(Distributor).filter(Distributor.status == True).all()
     #bonus_accounts = ["taitim484@gmail.com", "powertaichi2@gmail.com"]
     bonus_accounts = ["realdealautom8@gmail.com","petersmith1love@gmail.com"]
+    ignored_cashapp_account_usernames = ["chango"]
     bonus_amount = 1.2
     for distributor in distributors:
         accounts = [temp.account for temp in distributor.accounts if temp.account.status]
         for account in accounts:
+            ignore = False
+            if account.username in ignored_cashapp_account_usernames:
+                ignore = True
             account_user = [temp.user for temp in account.users if temp.user.status]
             for user in account_user:
                 try:
@@ -54,8 +58,7 @@ def process_new(self, *args, **kwargs):
                                 if not existing_email and sender_email != user.email:
                                     status = EmailStatus.Skipped.value
                                     platform = ""
-                                    if "cash@square.com" == sender_email and "sent you" in subject.lower():
-
+                                    if ignore or ("cash@square.com" == sender_email and "sent you" in subject.lower()):
                                         subject_ele = subject.split(" ")
                                         subject_platform = subject_ele[len(subject_ele) - 1]
                                         user_name = subject_ele[len(subject_ele) - 2]
