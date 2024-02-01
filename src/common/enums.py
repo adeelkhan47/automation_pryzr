@@ -39,4 +39,5 @@ class Platforms(Enum):
     UltraPanda = "UltraPanda"
     DragonWorld = "DragonWorld"
     PandaMaster = "PandaMaster"
+    CandyLand = "CandyLand"
 

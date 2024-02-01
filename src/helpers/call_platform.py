@@ -14,6 +14,7 @@ from platform_scripts.bigWinner import run_script as big_winner_script
 from platform_scripts.ultraPanda import run_script as ultra_panda_script
 from platform_scripts.dragonworld import run_script as dragon_world_script
 from platform_scripts.pandamaster import run_script as panda_master_script
+from platform_scripts.candyland import run_script as candy_land_script
 
 
 def run_platform(subject_platform, each, username, amount,know_platform=""):
@@ -50,6 +51,8 @@ def run_platform(subject_platform, each, username, amount,know_platform=""):
             platform = Platforms.DragonWorld.value
         elif subject_platform.lower() == "pm" or subject_platform.lower() == "pandamaster":
             platform = Platforms.PandaMaster.value
+        elif subject_platform.lower() == "cl" or subject_platform.lower() == "candyland":
+            platform = Platforms.CandyLand.value
         else:
             return False, "Platform Not Identified", ""
     user_platforms = each.platforms
@@ -110,4 +113,7 @@ def run_platform(subject_platform, each, username, amount,know_platform=""):
             return res, msg, platform
         if platform == Platforms.PandaMaster.value:
             res, msg = panda_master_script(username, int(amount), creds[0], creds[1])
+            return res, msg, platform
+        if platform == Platforms.CandyLand.value:
+            res, msg = candy_land_script(username, int(amount), creds[0], creds[1])
             return res, msg, platform
