@@ -40,4 +40,5 @@ class Platforms(Enum):
     DragonWorld = "DragonWorld"
     PandaMaster = "PandaMaster"
     CandyLand = "CandyLand"
+    RiverSweep = "RiverSweep"
 
