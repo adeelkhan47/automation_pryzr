@@ -11,8 +11,8 @@ from helpers.common import extract_using_GBC, close_and_quit_driver, get_ubuntu_
 
 
 def run_script(userid, amount, username, password):
-    #driver = get_mac_chrome_driver()
-    driver = get_ubuntu_chrome_driver()
+    driver = get_mac_chrome_driver()
+    #driver = get_ubuntu_chrome_driver()
     wait = WebDriverWait(driver, 5)
 
     status = False
@@ -44,8 +44,11 @@ def run_script(userid, amount, username, password):
             while not found:
                 logging.error(count)
                 time.sleep(1)
-                record = wait.until(
-                    EC.presence_of_element_located((By.XPATH, f"//*[@id='select2-usersIds-results']/li[{count}]")))
+                try:
+                    record = wait.until(
+                        EC.presence_of_element_located((By.XPATH, f"//*[@id='select2-usersIds-results']/li[{count}]")))
+                except:
+                    record = EC.presence_of_element_located((By.XPATH, f"//*[@id='select2-usersIds-results']/li"))
                 logging.error(record.text.lower())
                 if record.text.lower() == userid.lower():
                     record.click()
