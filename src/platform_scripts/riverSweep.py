@@ -11,7 +11,7 @@ from helpers.common import extract_using_GBC, close_and_quit_driver, get_ubuntu_
 
 
 def run_script(userid, amount, username, password):
-    #driver = get_mac_chrome_driver()
+    driver = get_mac_chrome_driver()
     driver = get_ubuntu_chrome_driver()
     wait = WebDriverWait(driver, 5)
 
@@ -34,8 +34,8 @@ def run_script(userid, amount, username, password):
 
         try:
             time.sleep(1)
-            ignore_btn = wait.until(EC.presence_of_element_located((By.XPATH, "//button[text()='Close']")))
-            ignore_btn.click()
+            # ignore_btn = wait.until(EC.presence_of_element_located((By.XPATH, "//button[text()='Close']")))
+            # ignore_btn.click()
             search = wait.until(EC.presence_of_element_located((By.XPATH, "//*[@id='main-content']/div[2]/form/div/span/span[1]/span/ul/li/input")))
             search.send_keys(userid)
             time.sleep(1)
