@@ -43,6 +43,7 @@ def run_script(userid, amount, username, password):
             count = 1
             while not found:
                 logging.info(count)
+                time.sleep(1)
                 record = wait.until(
                     EC.presence_of_element_located((By.XPATH, f"//*[@id='select2-usersIds-results']/li[{count}]")))
                 logging.info(record.text.lower())
