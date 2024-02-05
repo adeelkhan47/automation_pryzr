@@ -42,9 +42,10 @@ def run_script(userid, amount, username, password):
 
             count = 1
             while not found:
+                logging.info(count)
                 record = wait.until(
                     EC.presence_of_element_located((By.XPATH, f"//*[@id='select2-usersIds-results']/li[{count}]")))
-                print(record.text.lower())
+                logging.info(record.text.lower())
                 if record.text.lower() == userid.lower():
                     record.click()
                     search_btn = wait.until(EC.presence_of_element_located((By.XPATH, "//button[text()='Search']")))
