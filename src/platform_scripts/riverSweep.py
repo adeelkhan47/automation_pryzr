@@ -11,8 +11,8 @@ from helpers.common import extract_using_GBC, close_and_quit_driver, get_ubuntu_
 
 
 def run_script(userid, amount, username, password):
-    driver = get_mac_chrome_driver()
-    #driver = get_ubuntu_chrome_driver()
+    #driver = get_mac_chrome_driver()
+    driver = get_ubuntu_chrome_driver()
     wait = WebDriverWait(driver, 5)
 
     status = False
