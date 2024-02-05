@@ -2,12 +2,12 @@
   "cors_origins": [
     "*"
   ],
-  "database_uri": "postgresql://postgres:postgres@localhost:5433/test_autom8",
-  "CLIENT_ID": "541897888013-l65co7aigf95et2ku1gblnseoagk1qm6.apps.googleusercontent.com",
-  "CLIENT_SECRET": "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",
-  "REDIRECT_URI": "http://localhost:8080/callback",
-  "BASE_URL": "https://de50-39-62-0-94.ngrok-free.app",
-  "FE_URL": "http://localhost:8080",
+  "database_uri": "postgresql://postgres:postgres@autom8_db:5432/autom8_db",
+  "CLIENT_ID": "205711707476-ckfeshqc4uhsbct0h1m28u90soh217cl.apps.googleusercontent.com",
+  "CLIENT_SECRET": "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",
+  "REDIRECT_URI": "https://www.autom8games.com/callback",
+  "BASE_URL": "https://be.autom8games.com",
+  "FE_URL": "https://www.autom8games.com",
   "DIST_FE_URL": "https://www.distributor.autom8games.com",
   "SCOPES": [
     "openid",
