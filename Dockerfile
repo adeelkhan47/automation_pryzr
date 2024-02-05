@@ -1,8 +1,8 @@
 FROM --platform=linux/amd64 python:3.9
 
 ENV DEBIAN_FRONTEND=noninteractive
-ARG CACHEBUST=1
-RUN wget --no-cache -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && \
+ARG CACHEBUST=0
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && \
     echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list && \
     apt-get update -y && \
     apt-get install -y google-chrome-stable || (apt-get update && apt-get -f install -y) && \
@@ -11,7 +11,7 @@ RUN wget --no-cache -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pu
     rm -rf /var/lib/apt/lists/*
 
 # Add Google Chrome to the repositories
-RUN wget --no-cache -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && \
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && \
     echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list
 
 # Clear any cache to ensure we fetch the latest packages and then update the packages
