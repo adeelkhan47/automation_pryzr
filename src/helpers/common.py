@@ -124,7 +124,7 @@ def extract_text_from_image(image_path):
 
 def get_mac_chrome_driver():
     options = ChromeOptions()
-    options.add_argument("--headless")
+    #options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     path_to_driver = ChromeDriverManager().install()
@@ -134,7 +134,7 @@ def get_mac_chrome_driver():
 
 def get_ubuntu_chrome_driver() -> object:
     options = uc.ChromeOptions()
-    #options.add_argument("--headless")
+    options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.binary_location = '/usr/bin/google-chrome-stable'
