@@ -56,7 +56,8 @@ def run_script(userid, amount, username, password):
                     break
                 count += 1
             driver.switch_to.default_content()
-        except:
+        except Exception as eee:
+            logging.exception(eee)
             msg = "User Not Found"
         # Switch to the new iframe using its `src` attribute
         if found:
