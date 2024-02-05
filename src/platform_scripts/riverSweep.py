@@ -44,11 +44,9 @@ def run_script(userid, amount, username, password):
             while not found:
                 logging.error(count)
                 time.sleep(1)
-                try:
-                    record = wait.until(
-                        EC.presence_of_element_located((By.XPATH, f"//*[@id='select2-usersIds-results']/li[{count}]")))
-                except:
-                    record = wait.until(EC.presence_of_element_located((By.XPATH, f"//*[@id='select2-usersIds-results']/li")))
+
+                record = wait.until(
+                    EC.presence_of_element_located((By.XPATH, f"//*[@id='select2-usersIds-results']/li[{count}]")))
                 logging.error(record.text.lower())
                 if record.text.lower() == userid.lower():
                     record.click()
