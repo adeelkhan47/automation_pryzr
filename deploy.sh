@@ -11,5 +11,6 @@ docker stop autom8_app
 docker rm -f autom8_app
 docker rmi automation_pryzr_python_app -f
 echo "${red}${whitebg}Rebuilding...${reset}"
-yes | docker-compose up -d 
+yes | docker-compose build --no-cache
+docker-compose up -d
 echo "${red}${whitebg}Deployment complete.${reset}"
