@@ -18,7 +18,7 @@ from helpers.jwt import create_access_token
 from model import Email, UserEmail, AccountUser
 from model.account import Account
 from model.user import User
-from platform_scripts.riverSweep import run_script
+from platform_scripts.yolo import run_script
 
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 router = APIRouter()
@@ -125,7 +125,7 @@ def process_emails(request: Request):
     # emails = get_emails(user.user_auth, 3)
     # email = emails[0]
     # emails = run_script("5999326", 1, "boss", "Brandon99",3806020)
-    emails = run_script("test00", 1, "autom8", "autom8")
+    emails = run_script("test1122", 1, "TropicSolutions722", "TropicSolutions722")
     # print(emails)
     # emails = acebook("test000111", 1, "CashierHA", "Cash616")
     # session = db.session

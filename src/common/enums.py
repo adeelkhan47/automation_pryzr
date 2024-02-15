@@ -41,4 +41,5 @@ class Platforms(Enum):
     PandaMaster = "PandaMaster"
     CandyLand = "CandyLand"
     RiverSweep = "RiverSweep"
+    Yolo = "Yolo"
 
