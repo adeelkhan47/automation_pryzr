@@ -102,3 +102,4 @@ def run_script(userid, amount, username, password):
                     return status, msg
         except Exception as ee:
             logging.exception(ee)
+            tries -= 1
