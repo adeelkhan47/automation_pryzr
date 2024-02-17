@@ -76,6 +76,7 @@ def run_script(userid, amount, username, password):
                 EC.element_to_be_clickable((By.XPATH, "//div[@class='m-ct-fm']//button/span[text()='OK']")))
             ok_button.click()
             status = True
+            time.sleep(1)
         except Exception as e:
             logging.exception(e)
             if msg == "":
