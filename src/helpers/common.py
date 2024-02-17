@@ -135,26 +135,26 @@ def get_mac_chrome_driver():
     return driver
 
 
-# def get_ubuntu_chrome_driver() -> object:
-#     try:
-#         options = ChromeOptions()
-#         options.add_argument("--headless")
-#         options.add_argument("--no-sandbox")
-#         options.add_argument("--disable-dev-shm-usage")
-#         options.binary_location = '/usr/bin/google-chrome-stable'
-#         driver = uc.Chrome(options=options)
-#         return driver
-#     except Exception as e:
-#         logging.exception(f"Error occurred while getting Chrome driver: {e}")
-#         return None
 def get_ubuntu_chrome_driver() -> object:
     try:
-        options = Options()
-        options.add_argument('--headless')
-        options.add_argument('--no-sandbox')
-        options.add_argument('--disable-dev-shm-usage')
-        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+        options = ChromeOptions()
+        options.add_argument("--headless")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        options.binary_location = '/usr/bin/google-chrome-stable'
+        driver = uc.Chrome(options=options)
         return driver
     except Exception as e:
         logging.exception(f"Error occurred while getting Chrome driver: {e}")
         return None
+# def get_ubuntu_chrome_driver() -> object:
+#     try:
+#         options = Options()
+#         options.add_argument('--headless')
+#         options.add_argument('--no-sandbox')
+#         options.add_argument('--disable-dev-shm-usage')
+#         driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+#         return driver
+#     except Exception as e:
+#         logging.exception(f"Error occurred while getting Chrome driver: {e}")
+#         return None
