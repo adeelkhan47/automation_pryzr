@@ -142,5 +142,5 @@ def get_ubuntu_chrome_driver() -> object:
         driver = uc.Chrome(options=options)
         return driver
     except Exception as e:
-        print(f"Error occurred while getting Chrome driver: {e}")
+        logging.exception(f"Error occurred while getting Chrome driver: {e}")
         return None
