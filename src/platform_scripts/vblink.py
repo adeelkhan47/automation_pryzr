@@ -36,7 +36,7 @@ def run_script(userid, amount, username, password):
             submit_btn = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "el-button--primary")))
             submit_btn.click()
             time.sleep(2)
-            wait.until(EC.presence_of_element_located((By.CLASS_NAME, "openSidebar")))
+            #wait.until(EC.presence_of_element_located((By.CLASS_NAME, "openSidebar")))
 
             # Redirect to a different page
             driver.get("https://gm.vblink777.club/#/manage-user/search")
