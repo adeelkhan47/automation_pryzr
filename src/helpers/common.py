@@ -138,7 +138,7 @@ def get_ubuntu_chrome_driver() -> object:
         options.add_argument("--headless")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
-        #options.binary_location = '/usr/bin/google-chrome-stable'
+        options.binary_location = '/usr/bin/google-chrome-stable'
         driver = uc.Chrome(options=options)
         return driver
     except Exception as e:
