@@ -22,7 +22,7 @@ RUN apt-get clean && \
 # Install Google Chrome with verbose output and log its version
 RUN apt-get install -y google-chrome-stable || (apt-get update && apt-get -f install -y) && \
     google-chrome-stable --version
-
+RUN which google-chrome-stable
 
 RUN apt-get install -y tesseract-ocr
 
