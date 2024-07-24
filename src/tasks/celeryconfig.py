@@ -13,11 +13,18 @@ result_persistent = False
 
 imports = ("tasks.email")
 
+
 beat_schedule = {
     "account_processed": {
         "task": "tasks.email.process_new",
-        "schedule": timedelta(seconds=10)
+        "schedule": timedelta(minutes=1)
+    },
+    "unauthorized_account_processed": {
+        "task": "tasks.email.process_unauthorized_accounts",
+        "schedule": timedelta(minutes=5)
     }
 }
+
+
 
 

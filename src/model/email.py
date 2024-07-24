@@ -11,8 +11,11 @@ class Email(Base):
     subject = Column(String(200))
     reason = Column(String(200))
     sender_email = Column(String)
+    username = Column(String, default="")
     sender_name = Column(String)
     status = Column(String)
+    platform = Column(String, default="")
+    amount = Column(String, default="")
     users = relationship("UserEmail", back_populates="email")
 
     @classmethod

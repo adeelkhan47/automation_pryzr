@@ -21,3 +21,25 @@ class EmailStatus(Enum):
     Successful = "Successful"
     Skipped = "Skipped"
     Failed = "Failed"
+
+
+class Platforms(Enum):
+    Taichi = "Taichi"
+    VBLink = "VBlink"
+    Firekirin = "Firekirin"
+    Acebook = "Acebook"
+    Orionstar = "Orionstar"
+    GameVault999 = "GameVault999"
+    Juwa = "Juwa"
+    BlueDragon = "BlueDragon"
+    GoldenDragon = "GoldenDragon"
+    Milkyway = "Milkyway"
+    DragonCrown = "DragonCrown"
+    BigWinner = "BigWinner"
+    UltraPanda = "UltraPanda"
+    DragonWorld = "DragonWorld"
+    PandaMaster = "PandaMaster"
+    CandyLand = "CandyLand"
+    RiverSweep = "RiverSweep"
+    Yolo = "Yolo"
+
